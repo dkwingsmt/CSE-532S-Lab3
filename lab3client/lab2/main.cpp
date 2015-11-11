@@ -4,43 +4,44 @@
 
 using namespace std;
 
-#define ARGID_SCRIPT    1
-#define ARGID_NTHRD     2
-#define ARGID_OVERRIDE  3
+#define ARGID_PORT    1
+#define ARGID_IPADDR  2
+#define ARGID_MINTHRD 3
+#define ARGID_SCRIPT  4
 
-const char *USAGE = "Usage: lab2.exe <configuration_file_path> <minimum-#-of-player> [-override]";
-const char *OVERRIDE = "-override";
+const char *USAGE = " <port> <ip_address> <min_threads> <script_file>+";
+
+void print_usage(const char *argv0) {
+    cout << "Usage: " << argv0 << USAGE << endl;
+}
 
 int program(int argc, char **argv) {
     if (argc < (ARGID_SCRIPT+1)) {
 		cout << "Need script file name.\n";
-		cout << USAGE << endl;
+        print_usage(argv[0]);
         return ARGUMENT_ERROR;
     }
 
 	int numberOfThreads = 0;
 	try{
-		numberOfThreads = argc > (ARGID_NTHRD+1) ? stoi(argv[ARGID_NTHRD]) : 0;
+		numberOfThreads = argc > (ARGID_MINTHRD+1) ? stoi(argv[ARGID_MINTHRD]) : 0;
 	}
 	catch (...) {
-		cerr << "3rd parameter expected as a lower bound(integer) on the number of threads" << endl;
-		cout << USAGE << endl;
+		cerr << "3rd parameter expected as a lower bound (integer) on the number of threads" << endl;
+        print_usage(argv[0]);
 		return ARGUMENT_ERROR;
 	}
 
-	bool bOverride = false;
+    //TODO: Parse port id and ip address
+    cout << "Client to listen on " << argv[ARGID_IPADDR] << ":" << argv[ARGID_PORT] << endl;
 
-	if (argc > ARGID_OVERRIDE) {
-		bOverride = strcmp(argv[ARGID_OVERRIDE], OVERRIDE) == 0;
-		if (!bOverride) {
-			cerr << "4th parameter expected as -override" << endl;
-			cout << USAGE << endl;
-			return ARGUMENT_ERROR;
-		}
-	}
-    const char *scriptFileName = argv[ARGID_SCRIPT];
+    vector<string> scripts_filename;
+    for (int i = ARGID_SCRIPT; i < argc; i++) {
+        scripts_filename.push_back(argv[i]);
+        cout << "[New script] " << scripts_filename.back() << endl;
+    }
     {
-        Director director(scriptFileName, numberOfThreads, bOverride);
+        Director director(scripts_filename.front(), numberOfThreads, false);
 
 		while (!director.electDirector());
 		while (!director.actEnded()) this_thread::yield();
