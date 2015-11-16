@@ -6,6 +6,7 @@
 #include <functional>
 #include <string>
 #include <mutex>
+#include <condition_variable>
 #include <algorithm>
 #include <cctype>
 
@@ -47,6 +48,51 @@ static inline std::string trim(std::string s) {
 }
 
 std::string dirnameOf(const std::string& fname);
+
+class SignaledBool {
+private:
+    bool _val;
+    std::atomic<bool> _ended;
+    std::mutex _mtx;
+    std::condition_variable _cv;
+
+public:
+    SignaledBool(bool init_val) : _val(init_val), _ended(false) {
+    }
+
+    void setAndNotifyAll(bool val) {
+        if (!_ended) {
+            {
+                std::lock_guard<std::mutex> lk(_mtx);
+                _val = val;
+            }
+            _cv.notify_all();
+        }
+    }
+
+    void waitUntilVal(bool val) {
+        if (!_ended) {
+            {
+                std::unique_lock<std::mutex> lk(_mtx);
+                if (_val != val) {
+                    _cv.wait(lk, [this, val] { return _ended || _val == val; });
+                }
+            }
+        }
+    }
+
+    operator bool () {
+        return _val;
+    }
+
+    void shutdown() {
+        _ended = true;
+    }
+
+    bool ended() {
+        return _ended;
+    }
+};
 
 extern std::mutex cout_mutex;
 

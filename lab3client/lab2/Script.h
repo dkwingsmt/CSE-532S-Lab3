@@ -56,6 +56,10 @@ public:
     }
 
     ~Script() {
+        while (!_play->actEnded()) {
+            std::this_thread::yield();
+        }
+
         _ended = true;
         // Work threads of players are joined by ~Player
         _registrar.shutdown();
@@ -71,9 +75,6 @@ public:
     // Called by the now-director Player
     // Return true if continue
     bool cue(tFollowerTask task);
-
-    // Must call Director::ended() after this function completes!
-    bool actEnded() { return _play->actEnded(); }
 
     void declareIdle(Player *me) {
         return _registrar.declareIdle(me);

@@ -43,12 +43,6 @@ int program(int argc, char **argv) {
     {
         Director director(scripts_filename, numberOfThreads);
         director.selectScript(1);
-
-        while (!director.actEnded()) {
-            this_thread::yield();
-        }
-        
-        // director joins players here.
     }
     cout << "End of main." << endl;
     return 0;

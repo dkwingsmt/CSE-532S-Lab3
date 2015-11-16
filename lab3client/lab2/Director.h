@@ -34,8 +34,6 @@ public:
         }
         _nowScript = NULL;
     }
-
-    bool actEnded() { return _nowScript->actEnded(); }
 };
 
 #endif
