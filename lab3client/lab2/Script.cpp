@@ -76,7 +76,7 @@ void Script::_recruit(size_t numPlayers) {
     }
 }
 
-bool Script::electDirector() {
+bool Script::_electDirector() {
     // Wait until there's no director
     while (_hasDirector) {
         this_thread::yield();

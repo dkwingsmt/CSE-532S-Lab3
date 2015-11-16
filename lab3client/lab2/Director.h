@@ -24,6 +24,7 @@ public:
         }
         stopNowScript();
         _nowScript = new Script(_scriptsFileName[id], _numOfPlayers);
+        _nowScript->start();
         return _nowScript;
     }
 
@@ -35,10 +36,6 @@ public:
     }
 
     bool actEnded() { return _nowScript->actEnded(); }
-
-    bool electDirector() {
-        return _nowScript->electDirector();
-    }
 };
 
 #endif

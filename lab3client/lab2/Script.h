@@ -20,6 +20,8 @@ class Director;
 
 class Script {
 private:
+    bool _ended;
+
     const static std::string PREFIX_SCENE;
     std::vector<tFragConfig> _scriptConfig;
     std::shared_ptr<Play> _play;
@@ -28,6 +30,8 @@ private:
     std::atomic<bool> _hasDirector;
     PlayerRegistrar _registrar;
 
+    std::thread _electionThread;
+
     // Returns biggestPairFrags
     size_t _readScript(std::string &scriptFileName);
     bool _readFragConfig(std::ifstream &, 
@@ -35,17 +39,33 @@ private:
                 std::string);
     void _recruit(size_t numPlayers);
 
+    void _electionThreadFunc() {
+        while (!_ended && _electDirector()) {
+        }
+    }
+
+    // Return true if continue
+    bool _electDirector();
+
 public:
     Script(std::string scriptFileName, size_t numberOfPlayers=0) : 
-        _hasDirector(false)
+        _ended(false), _hasDirector(false)
     {
         size_t biggestPairFrags = _readScript(scriptFileName);
         _recruit(std::max(biggestPairFrags, numberOfPlayers));
     }
 
     ~Script() {
+        _ended = true;
         // Work threads of players are joined by ~Player
         _registrar.shutdown();
+        if (_electionThread.joinable()) {
+            _electionThread.join();
+        }
+    }
+
+    void start() {
+        _electionThread = std::thread([this] { _electionThreadFunc(); });
     }
 
     // Called by the now-director Player
@@ -58,9 +78,6 @@ public:
     void declareIdle(Player *me) {
         return _registrar.declareIdle(me);
     }
-
-    // Return true if continue
-    bool electDirector();
     void resign() {
         _hasDirector = false;
     }

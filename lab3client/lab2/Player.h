@@ -91,7 +91,7 @@ public:
 
     void declareIdle(Player *me) {
         Player *empty = NULL;
-        while (!std::atomic_compare_exchange_strong(&_idler, &empty, me) && !_ended) {
+        while (!_ended && !std::atomic_compare_exchange_strong(&_idler, &empty, me)) {
             empty = NULL;
             std::this_thread::yield();
         }
@@ -99,7 +99,7 @@ public:
 
     Player *getIdle() {
         Player *leader = NULL;
-        while (!(leader = std::atomic_exchange<Player*>(&_idler, NULL)) && !_ended) {
+        while (!_ended && !(leader = std::atomic_exchange<Player*>(&_idler, NULL))) {
             std::this_thread::yield();
         }
         return leader;
