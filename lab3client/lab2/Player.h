@@ -98,8 +98,8 @@ public:
     }
 
     Player *getIdle() {
-        Player *leader;
-        while (!(leader = std::atomic_exchange<Player*>(&_idler, NULL))) {
+        Player *leader = NULL;
+        while (!(leader = std::atomic_exchange<Player*>(&_idler, NULL)) && !_ended) {
             std::this_thread::yield();
         }
         return leader;

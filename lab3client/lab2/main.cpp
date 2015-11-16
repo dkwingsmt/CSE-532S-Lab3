@@ -44,8 +44,11 @@ int program(int argc, char **argv) {
         Director director(scripts_filename, numberOfThreads);
         director.selectScript(1);
 
-		while (!director.electDirector());
-		while (!director.actEnded()) this_thread::yield();
+		while (director.electDirector()) {
+        }
+		while (!director.actEnded()) {
+            this_thread::yield();
+        }
 		
         // director joins players here.
 	}

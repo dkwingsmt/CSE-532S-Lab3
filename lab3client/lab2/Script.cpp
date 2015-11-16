@@ -84,16 +84,23 @@ bool Script::electDirector() {
     // Wait until there's an idle
     
     Player *leader = _registrar.getIdle();
+    if (leader == NULL) {
+        return false;
+    }
 	_hasDirector = true;
 	
 	leader->assignLeader(_play->getNextTask());
 
-	return _play->distributeEnded();
+	return !_play->distributeEnded();
 }
 
-void Script::cue(size_t fragId, tCharConfig charConfig) {
+bool Script::cue(size_t fragId, tCharConfig charConfig) {
     Player *follower = _registrar.getIdle();
+    if (!follower) {
+        return false;
+    }
 	tFollowerTask task({ fragId, charConfig.first, charConfig.second });
     follower->assignFollower(task);
+    return true;
 }
 

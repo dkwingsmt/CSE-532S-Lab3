@@ -52,7 +52,8 @@ public:
 	}
 
     // Called by the now-director Player
-    void cue(size_t fragId, tCharConfig charConfig);
+    // Return true if continue
+    bool cue(size_t fragId, tCharConfig charConfig);
 
     // Must call Director::ended() after this function completes!
 	bool actEnded() { return _play->actEnded(); }
@@ -60,6 +61,8 @@ public:
     void declareIdle(Player *me) {
         return _registrar.declareIdle(me);
     }
+
+    // Return true if continue
     bool electDirector();
 	void resign() {
 		_hasDirector = false;

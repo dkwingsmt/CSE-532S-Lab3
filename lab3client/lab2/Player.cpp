@@ -96,7 +96,9 @@ void Player::_doLeader() {
     auto newChar = myChar;
     ++newChar;
     for(; newChar != chars.end(); newChar++) {
-        _director->cue(fragId, *newChar);
+        if (!_director->cue(fragId, *newChar)){
+            return;
+        }
 	}
 	tFollowerTask ft({ fragId, myChar->first, myChar->second });
 	_assignFollowerSync(ft);

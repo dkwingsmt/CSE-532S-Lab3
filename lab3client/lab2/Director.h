@@ -35,8 +35,9 @@ public:
     }
 
     // Called by the now-director Player
-    void cue(size_t fragId, tCharConfig charConfig) {
-        _nowScript->cue(fragId, charConfig);
+    // Return true if continue
+    bool cue(size_t fragId, tCharConfig charConfig) {
+        return _nowScript->cue(fragId, charConfig);
     }
 
     // Must call Director::ended() after this function completes!
