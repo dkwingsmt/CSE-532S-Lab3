@@ -70,7 +70,7 @@ public:
         _hasTask(false),
         _ended(false)
     {
-		_workThread = std::move(std::thread([this] { _start(); }));
+		_workThread = std::thread([this] { _start(); });
     }
 
     ~Player() {
@@ -82,6 +82,33 @@ public:
 
 };
 
+class PlayerRegistrar {
+private:
+    std::atomic<Player*> _idler;
+    bool _ended;
+public:
+    PlayerRegistrar() : _idler(NULL), _ended(false) {}
+
+    void declareIdle(Player *me) {
+        Player *empty = NULL;
+        while (!std::atomic_compare_exchange_strong(&_idler, &empty, me) && !_ended) {
+            empty = NULL;
+            std::this_thread::yield();
+        }
+    }
+
+    Player *getIdle() {
+        Player *leader;
+        while (!(leader = std::atomic_exchange<Player*>(&_idler, NULL))) {
+            std::this_thread::yield();
+        }
+        return leader;
+    }
+
+    void shutdown() {
+        _ended = true;
+    }
+};
 
 
 #endif

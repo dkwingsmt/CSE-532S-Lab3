@@ -27,8 +27,8 @@ private:
     std::shared_ptr<Play> _play;
     std::list<std::shared_ptr<Player>> _players;
 
-    std::atomic<Player *> _idler;
     std::atomic<bool> _hasDirector;
+    PlayerRegistrar _registrar;
 
     // Returns biggestPairFrags
     size_t _readScript(std::string &scriptFileName);
@@ -40,7 +40,7 @@ private:
 public:
     Script(Director *director, std::string scriptFileName, 
                 size_t numberOfPlayers=0, bool bOverride=false) : 
-		_director(director), _idler(NULL), _hasDirector(false)
+		_director(director), _hasDirector(false)
     {
         size_t biggestPairFrags = _readScript(scriptFileName);
         _recruit(bOverride ? numberOfPlayers : std::max(biggestPairFrags, numberOfPlayers));
@@ -48,6 +48,7 @@ public:
 
 	~Script() {
         // Work threads of players are joined by ~Player
+        _registrar.shutdown();
 	}
 
     // Called by the now-director Player
@@ -56,7 +57,9 @@ public:
     // Must call Director::ended() after this function completes!
 	bool actEnded() { return _play->actEnded(); }
 
-    void declareIdle(Player *me);
+    void declareIdle(Player *me) {
+        return _registrar.declareIdle(me);
+    }
     bool electDirector();
 	void resign() {
 		_hasDirector = false;

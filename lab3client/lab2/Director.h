@@ -29,7 +29,7 @@ public:
 
     void stopNowScript() {
         if (_nowScript) {
-            //TODO
+            delete _nowScript;
         }
         _nowScript = NULL;
     }

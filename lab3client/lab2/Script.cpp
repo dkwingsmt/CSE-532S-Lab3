@@ -77,15 +77,13 @@ void Script::_recruit(size_t numPlayers) {
 }
 
 bool Script::electDirector() {
-    Player *leader;
     // Wait until there's no director
 	while (_hasDirector) {
 		this_thread::yield();
 	}
     // Wait until there's an idle
-	while (!(leader = atomic_exchange<Player*>(&_idler, NULL))) {
-		this_thread::yield();
-	}
+    
+    Player *leader = _registrar.getIdle();
 	_hasDirector = true;
 	
 	leader->assignLeader(_play->getNextTask());
@@ -94,19 +92,8 @@ bool Script::electDirector() {
 }
 
 void Script::cue(size_t fragId, tCharConfig charConfig) {
-    Player *follower;
-    while (!(follower = atomic_exchange<Player*>(&_idler, NULL))) {
-        this_thread::yield();
-    }
+    Player *follower = _registrar.getIdle();
 	tFollowerTask task({ fragId, charConfig.first, charConfig.second });
     follower->assignFollower(task);
-}
-
-void Script::declareIdle(Player *me) {
-	Player *empty = NULL;
-	while (!atomic_compare_exchange_strong(&_idler, &empty, me) && !_play->actEnded()) {
-		empty = NULL;
-		this_thread::yield();
-	}
 }
 
