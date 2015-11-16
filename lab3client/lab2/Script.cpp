@@ -50,7 +50,7 @@ size_t Script::_readScript(string &scriptFileName) {
 
 bool Script::_readFragConfig(ifstream &fragFile, 
             std::list<tCharConfig> &chars, string dir) {
-	list<Player> players;
+    list<Player> players;
     // Read play file
     string line;
     while (getline(fragFile, line))
@@ -78,20 +78,20 @@ void Script::_recruit(size_t numPlayers) {
 
 bool Script::electDirector() {
     // Wait until there's no director
-	while (_hasDirector) {
-		this_thread::yield();
-	}
+    while (_hasDirector) {
+        this_thread::yield();
+    }
     // Wait until there's an idle
     
     Player *leader = _registrar.getIdle();
     if (leader == NULL) {
         return false;
     }
-	_hasDirector = true;
-	
-	leader->assignLeader(_play->getNextTask());
+    _hasDirector = true;
+    
+    leader->assignLeader(_play->getNextTask());
 
-	return !_play->distributeEnded();
+    return !_play->distributeEnded();
 }
 
 bool Script::cue(size_t fragId, tCharConfig charConfig) {
@@ -99,7 +99,7 @@ bool Script::cue(size_t fragId, tCharConfig charConfig) {
     if (!follower) {
         return false;
     }
-	tFollowerTask task({ fragId, charConfig.first, charConfig.second });
+    tFollowerTask task({ fragId, charConfig.first, charConfig.second });
     follower->assignFollower(task);
     return true;
 }

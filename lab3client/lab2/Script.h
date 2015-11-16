@@ -40,23 +40,23 @@ private:
 public:
     Script(Director *director, std::string scriptFileName, 
                 size_t numberOfPlayers=0, bool bOverride=false) : 
-		_director(director), _hasDirector(false)
+        _director(director), _hasDirector(false)
     {
         size_t biggestPairFrags = _readScript(scriptFileName);
         _recruit(bOverride ? numberOfPlayers : std::max(biggestPairFrags, numberOfPlayers));
     }
 
-	~Script() {
+    ~Script() {
         // Work threads of players are joined by ~Player
         _registrar.shutdown();
-	}
+    }
 
     // Called by the now-director Player
     // Return true if continue
     bool cue(size_t fragId, tCharConfig charConfig);
 
     // Must call Director::ended() after this function completes!
-	bool actEnded() { return _play->actEnded(); }
+    bool actEnded() { return _play->actEnded(); }
 
     void declareIdle(Player *me) {
         return _registrar.declareIdle(me);
@@ -64,9 +64,9 @@ public:
 
     // Return true if continue
     bool electDirector();
-	void resign() {
-		_hasDirector = false;
-	}
+    void resign() {
+        _hasDirector = false;
+    }
     
 };
 

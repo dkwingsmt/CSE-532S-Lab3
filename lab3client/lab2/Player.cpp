@@ -37,7 +37,7 @@ void Player::_read() {
 }
 
 void Player::_act() {
-	sort(_lines.begin(), _lines.end());
+    sort(_lines.begin(), _lines.end());
     for(vector<PlayLine>::const_iterator playIterator = _lines.begin(); 
                 playIterator != _lines.end(); /* Blank */)
         _play->recite(playIterator, _task.followerTask.fragId);
@@ -50,11 +50,11 @@ void Player::_start() {
         {
             unique_lock<mutex> lk(_idleMutex);
             if (!_hasTask && !_play->actEnded())
-				_idleCv.wait(lk, [&] { 
-				return _hasTask || _play->actEnded(); });
-			if (_play->actEnded()) {
-				return;
-			}
+                _idleCv.wait(lk, [&] { 
+                return _hasTask || _play->actEnded(); });
+            if (_play->actEnded()) {
+                return;
+            }
         }
         if (_task.isLeader) {
             _doLeader();
@@ -99,9 +99,9 @@ void Player::_doLeader() {
         if (!_director->cue(fragId, *newChar)){
             return;
         }
-	}
-	tFollowerTask ft({ fragId, myChar->first, myChar->second });
-	_assignFollowerSync(ft);
-	_director->resign();
+    }
+    tFollowerTask ft({ fragId, myChar->first, myChar->second });
+    _assignFollowerSync(ft);
+    _director->resign();
     _doFollower();
 }

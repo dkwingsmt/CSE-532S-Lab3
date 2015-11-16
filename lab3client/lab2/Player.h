@@ -59,8 +59,8 @@ private:
         }
 
         _idleCv.notify_one();
-		if (_workThread.joinable())
-			_workThread.join();
+        if (_workThread.joinable())
+            _workThread.join();
     }
 
 public:
@@ -70,7 +70,7 @@ public:
         _hasTask(false),
         _ended(false)
     {
-		_workThread = std::thread([this] { _start(); });
+        _workThread = std::thread([this] { _start(); });
     }
 
     ~Player() {

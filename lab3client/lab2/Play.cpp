@@ -60,11 +60,11 @@ void Play::exit() {
             _sceneFragCounter++;
             if (_sceneFragCounter != _sceneConfig.size() &&
                         _sceneConfig[_sceneFragCounter].title.size()) {
-				cout << "\n\nScene ["
-					<< _sceneConfig[_sceneFragCounter].title
-					<< "]" << std::endl;
+                cout << "\n\nScene ["
+                    << _sceneConfig[_sceneFragCounter].title
+                    << "]" << std::endl;
             }
-			_lineCounter = 1;
+            _lineCounter = 1;
         }
     }
     _reciteCv.notify_all();

@@ -22,13 +22,13 @@ struct tFragConfig {
 // Structured lines of the play, which contains order, the character by which 
 //it belongs to and the text.
 struct PlayLine {
-	size_t order;
+    size_t order;
     std::string character;
     std::string text;
 
-	bool operator< (const PlayLine &b) const {
-		return order < b.order;
-	}
+    bool operator< (const PlayLine &b) const {
+        return order < b.order;
+    }
 };
 
 struct tLeaderTask{
@@ -78,7 +78,7 @@ private:
     }
 
 public:
-	explicit Play(const std::vector<tFragConfig> &fragTitles) : 
+    explicit Play(const std::vector<tFragConfig> &fragTitles) : 
         _lineCounter(1), 
         _sceneFragCounter(0),
         _sceneConfig(fragTitles),
@@ -92,17 +92,17 @@ public:
         }
     }
 
-	void recite(std::vector<PlayLine>::const_iterator &line,
+    void recite(std::vector<PlayLine>::const_iterator &line,
                 size_t fragId);
 
     void enter(size_t fragId);
     void exit();
     bool distributeEnded() { 
         return _sceneFragDistributed == _sceneConfig.size();
-	}
-	bool actEnded() {
-		return _sceneFragCounter == _sceneConfig.size();
-	}
+    }
+    bool actEnded() {
+        return _sceneFragCounter == _sceneConfig.size();
+    }
 
     tLeaderTask getNextTask();
 

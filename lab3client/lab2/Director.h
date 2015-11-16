@@ -14,9 +14,9 @@ public:
     {
     }
 
-	~Director() {
+    ~Director() {
         stopNowScript();
-	}
+    }
 
     bool selectScript(size_t id) {
         if (id >= _scriptsFileName.size()) {
@@ -41,7 +41,7 @@ public:
     }
 
     // Must call Director::ended() after this function completes!
-	bool actEnded() { return _nowScript->actEnded(); }
+    bool actEnded() { return _nowScript->actEnded(); }
 
     void declareIdle(Player *me) {
         return _nowScript->declareIdle(me);
@@ -51,9 +51,9 @@ public:
         return _nowScript->electDirector();
     }
 
-	void resign() {
+    void resign() {
         _nowScript->resign();
-	}
+    }
     
 };
 
