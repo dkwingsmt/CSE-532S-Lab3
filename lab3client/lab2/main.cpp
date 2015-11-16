@@ -41,7 +41,8 @@ int program(int argc, char **argv) {
         cout << "[New script] " << scripts_filename.back() << endl;
     }
     {
-        Director director(scripts_filename.front(), numberOfThreads, false);
+        Director director(scripts_filename, numberOfThreads);
+        director.selectScript(1);
 
 		while (!director.electDirector());
 		while (!director.actEnded()) this_thread::yield();

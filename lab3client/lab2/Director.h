@@ -5,35 +5,53 @@
 
 class Director {
 private:
-    Script _script;
+    Script *_nowScript;
+    std::vector<std::string> _scriptsFileName;
+    size_t _numOfPlayers;
 public:
-    Director(std::string scriptFileName, size_t numberOfPlayers = 0, bool bOverride = false) : 
-        _script(this, scriptFileName, numberOfPlayers, bOverride)
+    Director(std::vector<std::string> scriptsFileName, size_t numberOfPlayers = 0) : 
+        _nowScript(NULL), _scriptsFileName(scriptsFileName), _numOfPlayers(numberOfPlayers)
     {
     }
 
 	~Director() {
-        // Work threads of players are joined by ~Player
+        stopNowScript();
 	}
+
+    bool selectScript(size_t id) {
+        if (id >= _scriptsFileName.size()) {
+            return false;
+        }
+        stopNowScript();
+        _nowScript = new Script(this, _scriptsFileName[id], _numOfPlayers, false);
+        return _nowScript;
+    }
+
+    void stopNowScript() {
+        if (_nowScript) {
+            //TODO
+        }
+        _nowScript = NULL;
+    }
 
     // Called by the now-director Player
     void cue(size_t fragId, tCharConfig charConfig) {
-        _script.cue(fragId, charConfig);
+        _nowScript->cue(fragId, charConfig);
     }
 
     // Must call Director::ended() after this function completes!
-	bool actEnded() { return _script.actEnded(); }
+	bool actEnded() { return _nowScript->actEnded(); }
 
     void declareIdle(Player *me) {
-        return _script.declareIdle(me);
+        return _nowScript->declareIdle(me);
     }
 
     bool electDirector() {
-        return _script.electDirector();
+        return _nowScript->electDirector();
     }
 
 	void resign() {
-        _script.resign();
+        _nowScript->resign();
 	}
     
 };
