@@ -23,7 +23,7 @@ public:
             return false;
         }
         stopNowScript();
-        _nowScript = new Script(this, _scriptsFileName[id], _numOfPlayers, false);
+        _nowScript = new Script(_scriptsFileName[id], _numOfPlayers);
         return _nowScript;
     }
 
@@ -34,27 +34,11 @@ public:
         _nowScript = NULL;
     }
 
-    // Called by the now-director Player
-    // Return true if continue
-    bool cue(size_t fragId, tCharConfig charConfig) {
-        return _nowScript->cue(fragId, charConfig);
-    }
-
-    // Must call Director::ended() after this function completes!
     bool actEnded() { return _nowScript->actEnded(); }
-
-    void declareIdle(Player *me) {
-        return _nowScript->declareIdle(me);
-    }
 
     bool electDirector() {
         return _nowScript->electDirector();
     }
-
-    void resign() {
-        _nowScript->resign();
-    }
-    
 };
 
 #endif

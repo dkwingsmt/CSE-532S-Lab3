@@ -10,13 +10,13 @@
 #include "common.h"
 #include "Play.h"
 
-class Director;
+class Script;
 
 class Player {
 
 private:
     Play *_play;
-    Director *_director;
+    Script *_script;
     std::thread _workThread;
     std::vector<PlayLine> _lines;
 
@@ -64,9 +64,9 @@ private:
     }
 
 public:
-    Player(Play *play, Director *director) :
+    Player(Play *play, Script *script) :
         _play(play), 
-        _director(director), 
+        _script(script), 
         _hasTask(false),
         _ended(false)
     {

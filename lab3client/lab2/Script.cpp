@@ -72,7 +72,7 @@ void Script::_recruit(size_t numPlayers) {
     _play = make_shared<Play>(_scriptConfig);
     _players.clear();
     for (size_t i = 0; i < numPlayers; i++) {
-        _players.push_back(make_shared<Player>(_play.get(), _director));
+        _players.push_back(make_shared<Player>(_play.get(), this));
     }
 }
 
@@ -94,12 +94,11 @@ bool Script::electDirector() {
     return !_play->distributeEnded();
 }
 
-bool Script::cue(size_t fragId, tCharConfig charConfig) {
+bool Script::cue(tFollowerTask task) {
     Player *follower = _registrar.getIdle();
     if (!follower) {
         return false;
     }
-    tFollowerTask task({ fragId, charConfig.first, charConfig.second });
     follower->assignFollower(task);
     return true;
 }

@@ -20,8 +20,6 @@ class Director;
 
 class Script {
 private:
-    Director *_director;
-
     const static std::string PREFIX_SCENE;
     std::vector<tFragConfig> _scriptConfig;
     std::shared_ptr<Play> _play;
@@ -38,12 +36,11 @@ private:
     void _recruit(size_t numPlayers);
 
 public:
-    Script(Director *director, std::string scriptFileName, 
-                size_t numberOfPlayers=0, bool bOverride=false) : 
-        _director(director), _hasDirector(false)
+    Script(std::string scriptFileName, size_t numberOfPlayers=0) : 
+        _hasDirector(false)
     {
         size_t biggestPairFrags = _readScript(scriptFileName);
-        _recruit(bOverride ? numberOfPlayers : std::max(biggestPairFrags, numberOfPlayers));
+        _recruit(std::max(biggestPairFrags, numberOfPlayers));
     }
 
     ~Script() {
@@ -53,7 +50,7 @@ public:
 
     // Called by the now-director Player
     // Return true if continue
-    bool cue(size_t fragId, tCharConfig charConfig);
+    bool cue(tFollowerTask task);
 
     // Must call Director::ended() after this function completes!
     bool actEnded() { return _play->actEnded(); }

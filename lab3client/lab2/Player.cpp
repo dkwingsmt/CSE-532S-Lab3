@@ -46,7 +46,7 @@ void Player::_act() {
 void Player::_start() {
     while (!_play->actEnded()) {
         _hasTask = false;
-        _director->declareIdle(this);
+        _script->declareIdle(this);
         {
             unique_lock<mutex> lk(_idleMutex);
             if (!_hasTask && !_play->actEnded())
@@ -96,12 +96,12 @@ void Player::_doLeader() {
     auto newChar = myChar;
     ++newChar;
     for(; newChar != chars.end(); newChar++) {
-        if (!_director->cue(fragId, *newChar)){
+        if (!_script->cue({fragId, newChar->first, newChar->second})){
             return;
         }
     }
     tFollowerTask ft({ fragId, myChar->first, myChar->second });
     _assignFollowerSync(ft);
-    _director->resign();
+    _script->resign();
     _doFollower();
 }
