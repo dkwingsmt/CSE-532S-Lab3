@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <iostream>
 #include <sstream>
+#include <thread>
 #include "common.h"
 #include "Play.h"
 
@@ -34,6 +35,7 @@ bool Play::recite(vector<PlayLine>::const_iterator &line,
             cout << line->text << endl;
             _lineCounter++;
         }
+        this_thread::sleep_for(chrono::milliseconds(100));
     }
     _reciteCv.notify_all();
     ++line;
@@ -51,7 +53,10 @@ void Play::enter(size_t fragId) {
     }
     if (fragId > _sceneFragCounter) {
         _reciteCv.wait(ul, [&]{ 
-                    return fragId == _sceneFragCounter; });
+                    return _ended || fragId == _sceneFragCounter; });
+    }
+    if (_ended) {
+        return;
     }
     ++_onStage;
 }
@@ -61,6 +66,9 @@ void Play::exit() {
         lock_guard<mutex> lk(_reciteMutex);
         --_onStage;
         if (_onStage == 0) {
+            if (_ended) {
+                return;
+            }
             _sceneFragCounter++;
             if (_sceneFragCounter != _sceneConfig.size() &&
                         _sceneConfig[_sceneFragCounter].title.size()) {

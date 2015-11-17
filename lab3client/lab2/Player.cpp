@@ -51,10 +51,10 @@ void Player::_start() {
         _hasTask = false;
         _script->declareIdle(this);
         {
-            unique_lock<mutex> lk(_idleMutex);
-            if (!_hasTask && !_play->actEnded())
-                _idleCv.wait(lk, [&] { 
-                return _hasTask || _play->actEnded(); });
+            unique_lock<mutex> lk(_idleMutex); 
+            while (!_hasTask && !_play->actEnded()) {
+                _idleCv.wait(lk);
+            }
             if (_play->actEnded()) {
                 return;
             }

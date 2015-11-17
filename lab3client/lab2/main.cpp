@@ -43,6 +43,7 @@ int program(int argc, char **argv) {
     {
         Director director(scripts_filename, numberOfThreads);
         director.selectScript(1);
+        getchar();
     }
     cout << "End of main." << endl;
     return 0;

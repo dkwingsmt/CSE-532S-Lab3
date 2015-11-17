@@ -78,13 +78,13 @@ void Script::_recruit(size_t numPlayers) {
 
 bool Script::_electDirector() {
     // Wait until there's no director
-    while (_hasDirector) {
+    while (!_play->distributeEnded() && _hasDirector) {
         this_thread::yield();
     }
-    // Wait until there's an idle
     
+    // Wait until there's an idle
     Player *leader = _registrar.getIdle();
-    if (leader == NULL) {
+    if (_play->distributeEnded() || leader == NULL) {
         return false;
     }
     _hasDirector = true;

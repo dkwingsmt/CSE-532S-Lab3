@@ -98,6 +98,7 @@ public:
 
     void shutdown() {
         _ended.setAndNotifyAll(true);
+        _reciteCv.notify_all();
     }
 
     void join() {

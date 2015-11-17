@@ -56,9 +56,8 @@ public:
     }
 
     ~Script() {
-        while (!_play->actEnded()) {
-            std::this_thread::yield();
-        }
+        _play->shutdown();
+        _play->join();
 
         _ended = true;
         // Work threads of players are joined by ~Player
