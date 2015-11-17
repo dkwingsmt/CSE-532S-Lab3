@@ -25,8 +25,6 @@ private:
     std::mutex _idleMutex;
     std::condition_variable _idleCv;
 
-    std::atomic<bool> _ended;
-
     void _read();
     void _act();
     void _start();
@@ -35,30 +33,14 @@ private:
 
     void _doLeader();
     void _doFollower() {
-        _enter();
-        _exit();
-    }
-
-    // On stage
-    void _enter() {
         _read();
         _play->enter(_task.followerTask.fragId);
         _act();
-    }
-
-    // Off stage
-    void _exit() {
         _play->exit();
     }
 
-
     void _join() {
-        {
-            std::lock_guard<std::mutex> lk(_idleMutex);
-            _ended = true;
-        }
-
-        _idleCv.notify_one();
+        _idleCv.notify_all();
         if (_workThread.joinable())
             _workThread.join();
     }
@@ -67,8 +49,7 @@ public:
     Player(Play *play, Script *script) :
         _play(play), 
         _script(script), 
-        _hasTask(false),
-        _ended(false)
+        _hasTask(false)
     {
         _workThread = std::thread([this] { _start(); });
     }

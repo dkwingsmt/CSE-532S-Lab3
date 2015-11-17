@@ -6,34 +6,38 @@
 
 using namespace std;
 
-void Play::recite(vector<PlayLine>::const_iterator &line,
+bool Play::recite(vector<PlayLine>::const_iterator &line,
             size_t fragId) {
     int reciteOrderCmp = 0;
-    unique_lock<mutex> ul(_reciteMutex);
-    _reciteCv.wait(ul, [&]{ 
-                reciteOrderCmp = _cmpFragLine(fragId, line->order,
-                    _sceneFragCounter, _lineCounter);
-                return reciteOrderCmp <= 0; });
-    if (reciteOrderCmp < 0) {
-        cerr << "Error: Asked to recite an earlier line [" 
-            << fragId << ", " << line->order
-            << "] but now at [" << _sceneFragCounter << ", "
-            << _lineCounter << "]." << endl;
-    }
-    else {
-#ifdef DEBUG
-        lock_guard<mutex> lk(cout_mutex);
-#endif
-        if (_currentPlayer != line->character) {
-            cout << "\n" << line->character << "." << endl;
-            _currentPlayer = line->character;
+    {
+        unique_lock<mutex> ul(_reciteMutex);
+        _reciteCv.wait(ul, [&reciteOrderCmp, this, fragId, &line]{ 
+                    if (_ended)
+                        return true;
+                    reciteOrderCmp = _cmpFragLine(fragId, line->order,
+                        _sceneFragCounter, _lineCounter);
+                    return reciteOrderCmp <= 0; });
+        if (_ended) {
+            return false;
         }
-        cout << line->text << endl;
-        _lineCounter++;
+        if (reciteOrderCmp < 0) {
+            cerr << "Error: Asked to recite an earlier line [" 
+                << fragId << ", " << line->order
+                << "] but now at [" << _sceneFragCounter << ", "
+                << _lineCounter << "]." << endl;
+        }
+        else {
+            if (_currentPlayer != line->character) {
+                cout << "\n" << line->character << "." << endl;
+                _currentPlayer = line->character;
+            }
+            cout << line->text << endl;
+            _lineCounter++;
+        }
     }
-    ul.unlock();
     _reciteCv.notify_all();
     ++line;
+    return true;
 }
 
 void Play::enter(size_t fragId) {

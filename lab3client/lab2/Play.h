@@ -11,6 +11,8 @@
 #include <vector>
 #include <atomic>
 
+#include "common.h"
+
 // {characterName, inputFileName}
 typedef std::pair<std::string, std::string> tCharConfig;
 
@@ -54,6 +56,8 @@ struct tPlayerTask {
 class Play
 {
 private:
+    SignaledBool _ended;
+
     std::mutex _reciteMutex;
     std::condition_variable _reciteCv;
 
@@ -64,7 +68,6 @@ private:
     const std::vector<tFragConfig> &_sceneConfig;
     size_t _onStage;
     std::atomic<size_t> _sceneFragDistributed;
-
 
     // return a - b
     static int _cmpFragLine(size_t aFrag, size_t aLine,
@@ -79,6 +82,7 @@ private:
 
 public:
     explicit Play(const std::vector<tFragConfig> &fragTitles) : 
+        _ended(false),
         _lineCounter(1), 
         _sceneFragCounter(0),
         _sceneConfig(fragTitles),
@@ -92,16 +96,24 @@ public:
         }
     }
 
-    void recite(std::vector<PlayLine>::const_iterator &line,
+    void shutdown() {
+        _ended.setAndNotifyAll(true);
+    }
+
+    void join() {
+        _ended.waitUntilVal(true);
+    }
+
+    bool recite(std::vector<PlayLine>::const_iterator &line,
                 size_t fragId);
 
     void enter(size_t fragId);
     void exit();
     bool distributeEnded() { 
-        return _sceneFragDistributed == _sceneConfig.size();
+        return _ended || _sceneFragDistributed == _sceneConfig.size();
     }
     bool actEnded() {
-        return _sceneFragCounter == _sceneConfig.size();
+        return _ended || _sceneFragCounter == _sceneConfig.size();
     }
 
     tLeaderTask getNextTask();

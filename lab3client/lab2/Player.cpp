@@ -39,8 +39,11 @@ void Player::_read() {
 void Player::_act() {
     sort(_lines.begin(), _lines.end());
     for(vector<PlayLine>::const_iterator playIterator = _lines.begin(); 
-                playIterator != _lines.end(); /* Blank */)
-        _play->recite(playIterator, _task.followerTask.fragId);
+                playIterator != _lines.end(); /* Blank */) {
+        if (!_play->recite(playIterator, _task.followerTask.fragId)) {
+            return;
+        }
+    }
 }
 
 void Player::_start() {

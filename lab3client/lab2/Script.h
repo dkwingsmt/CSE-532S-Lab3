@@ -79,6 +79,7 @@ public:
     void declareIdle(Player *me) {
         return _registrar.declareIdle(me);
     }
+
     void resign() {
         _hasDirector = false;
     }
