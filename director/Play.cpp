@@ -70,12 +70,16 @@ void Play::exit() {
                 return;
             }
             _sceneFragCounter++;
-            if (_sceneFragCounter != _sceneConfig.size() &&
-                        _sceneConfig[_sceneFragCounter].title.size()) {
-                cout << "\n\nScene ["
-                    << _sceneConfig[_sceneFragCounter].title
-                    << "]" << std::endl;
+            if (_sceneFragCounter != _sceneConfig.size()) {
+				if (_sceneConfig[_sceneFragCounter].title.size()) {
+					cout << "\n\nScene ["
+						<< _sceneConfig[_sceneFragCounter].title
+						<< "]" << std::endl;
+				}
             }
+			else {
+				_ended.setAndNotifyAll(true);
+			}
             _lineCounter = 1;
         }
     }
