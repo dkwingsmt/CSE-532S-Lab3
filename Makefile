@@ -1,4 +1,4 @@
-MAINDIR=lab2
+MAINDIR=director
 MAINFILES=main.cpp Director.cpp Play.cpp Player.cpp Script.cpp
 EXTRADIR=lab2_generator
 EXTRAFILES=main.cpp
