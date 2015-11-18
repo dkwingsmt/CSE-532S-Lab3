@@ -31,6 +31,7 @@ private:
     PlayerRegistrar _registrar;
 
     std::thread _electionThread;
+    std::function<void(void)> _onActEnd;
 
     // Returns biggestPairFrags
     size_t _readScript(std::string &scriptFileName);
@@ -42,14 +43,16 @@ private:
     void _electionThreadFunc() {
         while (!_ended && _electDirector()) {
         }
+        _play->join();
+        _onActEnd();
     }
 
     // Return true if continue
     bool _electDirector();
 
 public:
-    Script(std::string scriptFileName, size_t numberOfPlayers=0) : 
-        _ended(false), _hasDirector(false)
+    Script(std::string scriptFileName, size_t numberOfPlayers, std::function<void(void)> onActEnd) : 
+        _ended(false), _hasDirector(false), _onActEnd(onActEnd)
     {
         size_t biggestPairFrags = _readScript(scriptFileName);
         _recruit(std::max(biggestPairFrags, numberOfPlayers));
@@ -81,6 +84,10 @@ public:
 
     void resign() {
         _hasDirector = false;
+    }
+
+    bool live() {
+        return !_play->actEnded();
     }
     
 };

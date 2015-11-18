@@ -35,7 +35,7 @@ bool Play::recite(vector<PlayLine>::const_iterator &line,
             cout << line->text << endl;
             _lineCounter++;
         }
-        this_thread::sleep_for(chrono::milliseconds(100));
+        this_thread::sleep_for(chrono::milliseconds(50));
     }
     _reciteCv.notify_all();
     ++line;

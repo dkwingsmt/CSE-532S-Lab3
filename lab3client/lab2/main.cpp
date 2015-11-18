@@ -42,7 +42,12 @@ int program(int argc, char **argv) {
     }
     {
         Director director(scripts_filename, numberOfThreads);
+        director.onActEnd([]{ cout << "############# Act Ended! #############" << endl; });
+        director.selectScript(0);
+        getchar();
         director.selectScript(1);
+        getchar();
+        director.selectScript(0);
         getchar();
     }
     cout << "End of main." << endl;
