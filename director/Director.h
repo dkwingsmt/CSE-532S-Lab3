@@ -31,7 +31,7 @@ public:
         stopNowScript();
         _nowScript = new Script(_scriptsFileName[id], _numOfPlayers, [this]{ _executeOnActEnd(); });
         _nowScript->start();
-        return _nowScript;
+        return _nowScript != NULL;
     }
 
     void stopNowScript() {

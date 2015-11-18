@@ -1,10 +1,10 @@
 #include <iostream>
+#include "common.h"
 #include <algorithm>
 #include <sstream>
 #include <fstream>
 #include "Director.h"
 #include "Player.h"
-#include "common.h"
 
 using namespace std;
 
@@ -26,11 +26,13 @@ void Player::_read() {
         if (iss >> lineNumber) {
             if (getline(iss, text)) {
                 trim(text);
-                if (!text.empty())
-                    _lines.push_back(PlayLine({
-                                    lineNumber, 
-                                    _task.followerTask.charName, 
-                                    text}));
+                if (!text.empty()) {
+					PlayLine playline;
+					playline.order = lineNumber;
+					playline.character = _task.followerTask.charName;
+					playline.text = text;
+                    _lines.push_back(playline);
+				}
             }
         }
     }
@@ -99,12 +101,19 @@ void Player::_doLeader() {
     auto newChar = myChar;
     ++newChar;
     for(; newChar != chars.end(); newChar++) {
-        if (!_script->cue({fragId, newChar->first, newChar->second})){
+		tFollowerTask task;
+		task.fragId = fragId;
+		task.charName = newChar->first;
+		task.charFileName = newChar->second;
+        if (!_script->cue(task)){
             return;
         }
     }
-    tFollowerTask ft({ fragId, myChar->first, myChar->second });
-    _assignFollowerSync(ft);
+    tFollowerTask task;
+	task.fragId = fragId;
+	task.charName = myChar->first;
+	task.charFileName = myChar->second;
+    _assignFollowerSync(task);
     _script->resign();
     _doFollower();
 }

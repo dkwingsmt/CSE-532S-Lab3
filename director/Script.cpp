@@ -1,6 +1,6 @@
+#include "common.h"
 #include <sstream>
 #include "Script.h"
-#include "common.h"
 
 using namespace std;
 
@@ -26,7 +26,9 @@ size_t Script::_readScript(string &scriptFileName) {
         }
         else {
             // Read fragment file
-            _scriptConfig.push_back({scene_title, {}});
+			tFragConfig frag;
+			frag.title = scene_title;
+            _scriptConfig.push_back(frag);
             string fragFileName = dir + trim(line);
             ifstream fragFile(fragFileName);
             if (!fragFile) {
@@ -62,7 +64,10 @@ bool Script::_readFragConfig(ifstream &fragFile,
         string inputFileName;
         if (istringstream(line) >> characterName >> inputFileName)
         {
-            chars.push_back({characterName, dir+inputFileName});
+			tCharConfig character;
+			character.first = characterName;
+			character.second = dir + inputFileName;
+            chars.push_back(character);
         }
     }
     return true;

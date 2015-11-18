@@ -9,6 +9,7 @@
 #include <condition_variable>
 #include <algorithm>
 #include <cctype>
+#include <atomic>
 
 //#define DEBUG
 

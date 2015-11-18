@@ -1,8 +1,8 @@
+#include "common.h"
 #include <algorithm>
 #include <iostream>
 #include <sstream>
 #include <thread>
-#include "common.h"
 #include "Play.h"
 
 using namespace std;
@@ -84,5 +84,8 @@ void Play::exit() {
 
 tLeaderTask Play::getNextTask() {
     size_t nowFragId = _sceneFragDistributed++;
-    return {nowFragId, _sceneConfig[nowFragId].chars};
+	tLeaderTask task;
+	task.fragId = nowFragId;
+	task.chars = _sceneConfig[nowFragId].chars;
+    return task;
 }
