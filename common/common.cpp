@@ -1,6 +1,5 @@
 #include <iostream>
 #include "common.h"
-
 using namespace std;
 
 // From http://stackoverflow.com/questions/8518743/get-directory-from-file-path-c

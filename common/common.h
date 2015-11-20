@@ -10,7 +10,6 @@
 #include <algorithm>
 #include <cctype>
 #include <atomic>
-
 //#define DEBUG
 
 enum ErrorCode {

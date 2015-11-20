@@ -43,12 +43,15 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PrecompiledHeader>Create</PrecompiledHeader>
+      <AdditionalIncludeDirectories>\\warehouse2.seasad.wustl.edu\home\zeneil\cse532s\Project\CSE-532S-Lab3\common;H:\cse532s\Ace\ACE_wrappers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>common.h</PrecompiledHeaderFile>
+      <PreprocessorDefinitions>WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>H:\cse532s\Ace\ACE_wrappers\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ACEd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -66,9 +69,24 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\common\common.cpp" />
+    <ClCompile Include="ClientHandler.cpp" />
+    <ClCompile Include="Comms.cpp" />
+    <ClCompile Include="DirectorRegistry.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="MessageQueue.cpp" />
+    <ClCompile Include="SimpleSerializer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\common.h" />
+    <ClInclude Include="ClientHandler.h" />
+    <ClInclude Include="ClientMessage.h" />
+    <ClInclude Include="Comms.h" />
+    <ClInclude Include="DirectorRegistry.h" />
+    <ClInclude Include="ISerializer.h" />
+    <ClInclude Include="MessageQueue.h" />
+    <ClInclude Include="Serializers.h" />
+    <ClInclude Include="SimpleSerializer.h" />
+    <ClInclude Include="stdi.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
