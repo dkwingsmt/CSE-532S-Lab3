@@ -4,6 +4,7 @@
 #include "MessageQueue.h"
 #include "stdi.h"
 #include "Serializers.h"
+#include "ServerMessage.h"
 
 typedef ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_NULL_SYNCH> super;
 
@@ -13,7 +14,7 @@ class ClientHandler : public super
 	DefaultSerializer serializer;
 
 	void shutdown();
-	int processMessage(const Message& message);
+	int processMessage(const ServerMessage& message);
 	int processClientMessage(const ClientMessage& message);
 	ClientMessage getClientMessage();
 
@@ -25,6 +26,6 @@ public:
 	virtual int handle_input(ACE_HANDLE);
 	virtual int handle_output(ACE_HANDLE);
 
-	void postMessage(Message message);
+	void postMessage(ServerMessage message);
 };
 

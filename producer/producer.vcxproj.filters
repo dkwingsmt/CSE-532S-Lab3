@@ -68,5 +68,11 @@
     <ClInclude Include="DirectorRegistry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ServerMessage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AspectConfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

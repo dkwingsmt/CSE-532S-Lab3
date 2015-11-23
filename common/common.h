@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <cctype>
 #include <atomic>
+#include "aspectConfig.h"
 //#define DEBUG
 
 enum ErrorCode {

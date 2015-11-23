@@ -24,7 +24,7 @@ int ClientHandler::open(void *acceptor_or_connector) {
 
 int ClientHandler::handle_output(ACE_HANDLE) {
 
-	Message message;
+	ServerMessage message;
 	if(!messageQueue.pop_message(message))
 		return 0;
 
@@ -69,7 +69,7 @@ int ClientHandler::processClientMessage(const ClientMessage& message) {
 	return 0;
 }
 
-int ClientHandler::processMessage(const Message& message) {
+int ClientHandler::processMessage(const ServerMessage& message) {
 
 	string serializedMessage = move(serializer.currentSerializer()->serialize(message));
 	peer().send(serializedMessage.c_str(), serializedMessage.length());
@@ -88,6 +88,6 @@ void ClientHandler::shutdown() {
 
 }
 
-void ClientHandler::postMessage(Message message) {
+void ClientHandler::postMessage(ServerMessage message) {
 	messageQueue.push_message(move(message));
 }

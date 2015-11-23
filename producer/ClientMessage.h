@@ -1,3 +1,4 @@
+#pragma once
 enum ClientMessageType {
 	REGISTER = 0,
 	AVAILABLE,

@@ -7,5 +7,3 @@ class Serializers {
 public:
 	ISerializer *currentSerializer() { return &serializer; }
 };
-
-class DefaultSerializer : public Serializers<SimpleSerializer> { };
