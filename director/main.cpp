@@ -1,15 +1,24 @@
 #include "common.h"
 #include "Director.h"
 #include <string>
-
+#include <sstream>
+#include "MessageHandler.h"
+#include "ClientHandler.h"
+ 
 using namespace std;
 
 #define ARGID_PORT    1
 #define ARGID_IPADDR  2
 #define ARGID_MINTHRD 3
 #define ARGID_SCRIPT  4
+#define STOP          "stop"
+#define QUIT          "quit"
+#define START         "start"
+
+
 
 const char *USAGE = " <port> <ip_address> <min_threads> <script_file>+";
+typedef ACE_Connector<MessageHandler, ACE_SOCK_CONNECTOR> directorConnector; 
 
 void print_usage(const char *argv0) {
     cout << "Usage: " << argv0 << USAGE << endl;
@@ -34,23 +43,49 @@ int program(int argc, char **argv) {
 
     //TODO: Parse port id and ip address
     cout << "Client to listen on " << argv[ARGID_IPADDR] << ":" << argv[ARGID_PORT] << endl;
+	istringstream port_strstream(argv[ARGID_PORT]);
 
-    vector<string> scripts_filename;
-    for (int i = ARGID_SCRIPT; i < argc; i++) {
-        scripts_filename.push_back(argv[i]);
-        cout << "[New script] " << scripts_filename.back() << endl;
-    }
-    {
-        Director director(scripts_filename, numberOfThreads);
-        director.onActEnd([]{ cout << "############# Act Ended! #############" << endl; });
-        director.selectScript(0);
-        getchar();
-        director.selectScript(1);
-        getchar();
-        director.selectScript(0);
-        getchar();
-    }
-    cout << "End of main." << endl;
+	u_short port_num;
+	if (!(port_strstream >> port_num))
+	{
+		cerr<<"invalid port number "<<endl;
+		print_usage(argv[0]);
+		return ARGUMENT_ERROR;
+	}
+ 
+ 
+ 
+
+	vector<string> scripts_filename;
+	for (int i = ARGID_SCRIPT; i < argc; i++) {
+		scripts_filename.push_back(argv[i]);
+		cout << "[New script] " << scripts_filename.back() << endl;
+	}
+	Director director(scripts_filename, numberOfThreads);
+
+	ACE_INET_Addr address( port_num ,argv[ARGID_IPADDR]);
+	
+	directorConnector connector;
+	MessageHandler* ds = new MessageHandler(&director);
+	if (connector.connect(ds, address)==-1)
+	{
+		ACE_DEBUG((LM_DEBUG,ACE_TEXT("connect error!/n")));  
+        return -1;  
+	} 
+	else
+	{
+		cout<<"connect success"<<endl;
+		//return 0;
+	}
+
+	//TODO: Receive message and react according to the message. 
+
+	ACE_Reactor::run_event_loop();
+
+
+
+
+ 
     return 0;
 }
 
