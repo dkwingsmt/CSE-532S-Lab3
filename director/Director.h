@@ -58,17 +58,17 @@ public:
 	std::vector<std::string> getScriptsAndStatus()
 	{
 		std::vector<std::string>  Scripts;
-		//for (auto&& scriptName : _scriptsFileName)
-		//{
-		//	if (scriptName != _nowScript->getScriptName())
-		//	{
-		//		Scripts.push_back(scriptName + " available ");
-		//	}
-		//	else
-		//	{
-		//		Scripts.push_back(scriptName+ " inProgress ");
-		//	}
-		//}
+		for (auto&& scriptName : _scriptsFileName)
+		{
+			if (scriptName != _nowScript->getScriptName())
+			{
+				Scripts.push_back(scriptName + " available ");
+			}
+			else
+			{
+				Scripts.push_back(scriptName+ " inProgress ");
+			}
+		}
 		return Scripts;
 	}
 	
