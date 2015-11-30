@@ -2,6 +2,9 @@
 #include <memory>
 #include <mutex>
 #include <condition_variable>
+#include <sstream>
+#include <algorithm>
+#include <iterator>
 #include "ace\Connector.h"  
 #include "ace\Reactor.h" 
 #include "ace\Svc_Handler.h"
@@ -21,7 +24,7 @@ using namespace std;
 #define BUF_LEN 60 
 #define STOP "stop"
 #define QUIT "quit"
-#define PLAY "play"
+#define START "start"
 #define WAITIGN "waiting"
  
 
@@ -81,16 +84,15 @@ public:
 		return 0;
 	}
 
-
-	void sendScriptFiles(vector<string>& scriptFiles)
+	//Sends available scripts as a menu to Producer. 
+	void sendScriptFileAndStatus()
 	{
-		const int buffer_size = 256;
-		for(auto script: scriptFiles)
-		{
-			peer().send_n( script.c_str(), buffer_size);
-		}
+		string bufferStr = "AvailableScripts";
+		vector<std::string> scripts = myDirector->getScriptsAndStatus();
+		bufferStr += accumulate(scripts.begin() , scripts.end(), string(""));
+		peer().send(bufferStr.c_str(), bufferStr.length());
 	}
-
+	 
  
 	MessageHandler (){};
 
@@ -106,23 +108,31 @@ public:
 	}
 
  
-	void processMessage( const char* msg_buffer)
+	void processMessage( char* msg_buffer)
 	{
-		myMessage->action = string(msg_buffer);
-
-		if (myMessage->action == PLAY)
+ 
+		string  str = string(msg_buffer);
+		istringstream iss(str);
+		std::istream_iterator<std::string> beg(iss), end;
+		vector<string> messageVec(beg, end);
+		if (messageVec[0] == START)
 		{
-			myDirector->selectScript(0);
+			//TODO: Start to play the correspondent play, which is indicated in 
+			//the next string in messageVec
+			myDirector->selectScript(stoi(messageVec[1]));
+			sendScriptFileAndStatus();
 		}
-		else if (myMessage->action == STOP)
+		else if (messageVec[0] == STOP)
 		{
+			//TODO: Stop the current play and send feedback to producer
 			myDirector->stopNowScript();
-			peer().send_n("Play stopped", 20);
+			sendScriptFileAndStatus();
 		}
-		else if (myMessage->action == QUIT)
+		else if (messageVec[0] == QUIT)
 		{
-			return ;
+			//TODO: Quit the director program safely, and send feedback to producer.
 		}
+		return;
 	}
 
  
@@ -130,6 +140,7 @@ private:
 	Director* myDirector;
 	shared_ptr<message> myMessage;
 	mutex myMutex;
+
 	static const int MAX_BUFFER_SIZE = 100;
 
 

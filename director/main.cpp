@@ -66,8 +66,8 @@ int program(int argc, char **argv) {
 	ACE_INET_Addr address( port_num ,argv[ARGID_IPADDR]);
 	
 	directorConnector connector;
-	MessageHandler* ds = new MessageHandler(&director);
-	if (connector.connect(ds, address)==-1)
+	MessageHandler* mh = new MessageHandler(&director);
+	if (connector.connect(mh, address)==-1)
 	{
 		ACE_DEBUG((LM_DEBUG,ACE_TEXT("connect error!/n")));  
         return -1;  
@@ -75,6 +75,7 @@ int program(int argc, char **argv) {
 	else
 	{
 		cout<<"connect success"<<endl;
+		mh->sendScriptFileAndStatus();
 		//return 0;
 	}
 
