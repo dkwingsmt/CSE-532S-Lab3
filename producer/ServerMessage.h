@@ -9,5 +9,11 @@ enum ServerMessageType {
 
 struct ServerMessage {
 	ServerMessageType type;	
+	int playId;
 	string playName;
+
+	ServerMessage() {}
+	ServerMessage(ServerMessageType type) : type(type) {}
+	ServerMessage(ServerMessageType type, int playId) : type(type), playId(playId) {}
+
 };

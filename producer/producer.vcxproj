@@ -71,10 +71,12 @@
     <ClCompile Include="..\common\common.cpp" />
     <ClCompile Include="ClientHandler.cpp" />
     <ClCompile Include="Comms.cpp" />
-    <ClCompile Include="DirectorRegistry.cpp" />
+    <ClCompile Include="ConsoleUtils.cpp" />
+    <ClCompile Include="DirectorRegister.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MessageQueue.cpp" />
     <ClCompile Include="SimpleSerializer.cpp" />
+    <ClCompile Include="TestHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\common.h" />
@@ -82,13 +84,15 @@
     <ClInclude Include="ClientHandler.h" />
     <ClInclude Include="ClientMessage.h" />
     <ClInclude Include="Comms.h" />
-    <ClInclude Include="DirectorRegistry.h" />
+    <ClInclude Include="ConsoleUtils.h" />
+    <ClInclude Include="DirectorRegister.h" />
     <ClInclude Include="ISerializer.h" />
     <ClInclude Include="MessageQueue.h" />
     <ClInclude Include="Serializers.h" />
     <ClInclude Include="ServerMessage.h" />
     <ClInclude Include="SimpleSerializer.h" />
     <ClInclude Include="stdi.h" />
+    <ClInclude Include="TestHandler.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

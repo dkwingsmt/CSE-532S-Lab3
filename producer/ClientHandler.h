@@ -5,11 +5,14 @@
 #include "stdi.h"
 #include "Serializers.h"
 #include "ServerMessage.h"
+#include "AspectConfig.h"
+#define MAX_BUFFER_SIZE 2048
 
 typedef ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_NULL_SYNCH> super;
 
 class ClientHandler : public super
 {
+	int currentDirectorId;
 	MessageQueue messageQueue;
 	DefaultSerializer serializer;
 
@@ -19,10 +22,7 @@ class ClientHandler : public super
 	ClientMessage getClientMessage();
 
 public:
-	ClientHandler(void);
-	~ClientHandler(void);
-
-	virtual int open(void *acceptor_or_connector = 0);
+	virtual int open(void *acceptor_or_connector);
 	virtual int handle_input(ACE_HANDLE);
 	virtual int handle_output(ACE_HANDLE);
 

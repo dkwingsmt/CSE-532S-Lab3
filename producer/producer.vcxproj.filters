@@ -33,7 +33,13 @@
     <ClCompile Include="SimpleSerializer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DirectorRegistry.cpp">
+    <ClCompile Include="DirectorRegister.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ConsoleUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TestHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -65,13 +71,19 @@
     <ClInclude Include="Serializers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DirectorRegistry.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ServerMessage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="AspectConfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectorRegister.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ConsoleUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TestHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
