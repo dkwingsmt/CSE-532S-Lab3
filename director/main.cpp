@@ -3,7 +3,7 @@
 #include <string>
 #include <sstream>
 #include "MessageHandler.h"
-#include "ClientHandler.h"
+
  
 using namespace std;
 
@@ -75,14 +75,14 @@ int program(int argc, char **argv) {
 	else
 	{
 		cout<<"connect success"<<endl;
-		mh->sendScriptFileAndStatus();
+		mh->sendScriptFile();
 		//return 0;
 	}
 
 	//TODO: Receive message and react according to the message. 
 
 	ACE_Reactor::run_event_loop();
-
+	cout << "Director quitted" <<endl;
 
 
 

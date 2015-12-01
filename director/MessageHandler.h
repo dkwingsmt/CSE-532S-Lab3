@@ -22,25 +22,18 @@ using namespace std;
 #define __MESSAGEHANDLER__
 
 #define BUF_LEN 60 
-#define STOP "stop"
-#define QUIT "quit"
-#define START "start"
-#define WAITIGN "waiting"
- 
-
-
-struct message
-{
-	string action;
-	message(){};
-	message(char* msg_buffer)
-	{
-		action = string(msg_buffer);
-	};
-
+  
+enum ClientMessageType {
+	REGISTER = 0,
+	AVAILABLE,
+	NULL_MSG
 };
 
-
+enum ServerMessageType {
+	START = 0,
+	STOP,
+	POISON
+};
 
 class MessageHandler 
 	:public ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_NULL_SYNCH>
@@ -58,24 +51,21 @@ public:
 
     int handle_input(ACE_HANDLE)  
 	{  
-		cout << "inside handle_input"<<endl;
-		char msg_buffer[100];  
-		cout << "inside handle_input 2"<<endl;
-       // memset(msg_buffer,0,BUF_LEN);  
+		char msg_buffer[MAX_BUFFER_SIZE];  
+       // memset(msg_buffer,0,BUF_LEN);
+ 
 		if (  peer().recv(msg_buffer,MAX_BUFFER_SIZE )>0 )
 		{
-			cout << string(msg_buffer) <<endl;
 
+			//cout << string(msg_buffer) <<endl;
+			processMessage(msg_buffer);
+ 
 		}
 		else
 		{
 			cout<<"no data received"<<endl;
 		};  
-		cout << "inside handle_input"<<endl;
-        ACE_DEBUG((LM_DEBUG,ACE_TEXT("%s/n"),msg_buffer)); 
-		//Parse input as message
-		processMessage(msg_buffer);
-
+        //ACE_DEBUG((LM_DEBUG,ACE_TEXT("%s/n"),msg_buffer)); 
         return 0;  
     }  
 
@@ -85,11 +75,15 @@ public:
 	}
 
 	//Sends available scripts as a menu to Producer. 
-	void sendScriptFileAndStatus()
+	void sendScriptFile()
 	{
-		string bufferStr = "AvailableScripts";
-		vector<std::string> scripts = myDirector->getScriptsAndStatus();
-		bufferStr += accumulate(scripts.begin() , scripts.end(), string(""));
+		string bufferStr = to_string(REGISTER) ;
+		vector<std::string> scripts = myDirector->getScriptsFileName();
+		for (auto script : scripts)
+		{
+			int pos = script.find_last_of("\\");
+			bufferStr += ("#"+script.substr(pos+1) );
+		}
 		peer().send(bufferStr.c_str(), bufferStr.length());
 	}
 	 
@@ -98,39 +92,60 @@ public:
 
 	MessageHandler(Director* director)
 	{
-		myMessage = make_shared<message>(message());
+		//myMessage = make_shared<message>(message());
 		myDirector =  director;
+		//Everytime the act ends, it sends a feedback to the producer that this director is available. 
+		//This line causes a crash on producer side. 
+		myDirector->onActEnd([this]{ sendFeedBack(AVAILABLE); });
 	};
 
 	~MessageHandler()
 	{
-		cout << "Killed ClientHandler instance: " << this << endl << endl;
+		 		cout << "Killed ClientHandler instance: " << this << endl << endl;
 	}
 
+	void sendFeedBack(ClientMessageType msgType)
+	{
+		string str = to_string(msgType);
+		peer().send(str.c_str(),str.length() );
+		return;
+	}
  
 	void processMessage( char* msg_buffer)
 	{
  
-		string  str = string(msg_buffer);
-		istringstream iss(str);
+		string  msg_str = string(msg_buffer);
+		istringstream iss(msg_str);
 		std::istream_iterator<std::string> beg(iss), end;
 		vector<string> messageVec(beg, end);
-		if (messageVec[0] == START)
+		int msgType = stoi(msg_str.substr(0, msg_str.find_first_of("#")));
+
+		if (msgType == START)
 		{
 			//TODO: Start to play the correspondent play, which is indicated in 
 			//the next string in messageVec
-			myDirector->selectScript(stoi(messageVec[1]));
-			sendScriptFileAndStatus();
+			string scriptNum = msg_str.substr( msg_str.find_first_of("#")+1, 1);
+			cout << scriptNum <<endl;
+			cout<<msgType<<" We got a start here" <<endl;
+			myDirector->selectScript(stoi(scriptNum));
+			//sendScriptFileAndStatus();
 		}
-		else if (messageVec[0] == STOP)
+		else if (msgType == STOP)
 		{
 			//TODO: Stop the current play and send feedback to producer
+			cout<<msgType<<" We got a stop here" <<endl;
 			myDirector->stopNowScript();
-			sendScriptFileAndStatus();
+			//sendScriptFileAndStatus();
 		}
-		else if (messageVec[0] == QUIT)
+		else if (msgType== POISON)
 		{
 			//TODO: Quit the director program safely, and send feedback to producer.
+			sendFeedBack(NULL_MSG); 
+			//Remove the handler and then end event loop.
+			//Not sure if this is correct way to do it. 
+			ACE_Reactor::instance()->remove_handler(this, ACE_Event_Handler::READ_MASK); 
+			ACE_Reactor::instance()->end_event_loop();
+
 		}
 		return;
 	}
@@ -138,10 +153,9 @@ public:
  
 private:
 	Director* myDirector;
-	shared_ptr<message> myMessage;
 	mutex myMutex;
 
-	static const int MAX_BUFFER_SIZE = 100;
+	static const int MAX_BUFFER_SIZE = 3;
 
 
 };

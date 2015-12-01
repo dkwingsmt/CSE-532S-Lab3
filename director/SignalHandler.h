@@ -18,6 +18,7 @@ public:
     switch(signum)
     {
 		case SIGINT: std::cout<<"You pressed SIGINT(Ctrl+C)\n";
+		//
 		ACE_Reactor::instance()->end_event_loop();
 		return 0;
     }
@@ -28,4 +29,3 @@ public:
 #endif
 
 
-//director.exe 12345 10.0.0.3 4 ..\configs\partial_hamlet_act_ii_script.txt
