@@ -113,9 +113,10 @@ reason.
 
 1: Director program
 	(1)MessageHandler
-		The message handler is the main handler for interacting with the producer. 
-		It receives message from the producer via handle_input and parses the message buffer and then 
-		calls the director to react. 
+		The message handler is the main handler for interacting with the 
+		producer. 
+		It receives message from the producer via handle_input and parses 
+		the message buffer and then calls the director to react. 
 		
 	(2)SignalHandler
 		This handler handles the Ctrl-C termination protocol. 
@@ -129,29 +130,32 @@ reason.
 1: Director Program
 	(1) Design of class Script:
 	(2) Design of class MessageHandler:
-		1): In main, this handler is created with the director, which is initialized by the script files and 
-			number of threads. The director pointer is a data member of the handler, and is the enter point
-			to react upon the signals from the producer. 
+		1): In main, this handler is created with the director, which is
+			initialized by the script files and number of threads. 
+			The director pointer is a data member of the handler, and is 
+			the enter point to react upon the signals from the producer. 
 			
-			Also, when handler is created, we specify the callback function in Script onActEnd to be a function
-			that sends an AVAILABLE signal to the producer. 
-			In this case, each time when the script is finished or stopped, the AVAILABLE signal will be sent to
-			the producer. 
+			Also, when handler is created, we specify the callback function in 
+			Script onActEnd to be a function that sends an AVAILABLE signal to the 
+			producer. 
+			In this case, each time when the script is finished or stopped, the 
+			AVAILABLE signal will be sent to the producer. 
 		
 		2): The function sendFeedBack sends 3 types of messages. 
 			REGISTER 0, which is followed by script names. 
 			AVAILABLE 1, which is just a signal to notify the producer. 
-			NULL_MSG 2, which notifies the producer that the director is quitted or tweminated by Ctrl+c
+			NULL_MSG 2, which notifies the producer that the director is quitted 
+			or tweminated by Ctrl+c
 			
 			
-		3): The function sendScriptfile is used to send script files to the producer and is called in main once the
-			connection to producer is successful. The scripts are sent in the form of char* buffer and acript names 
-			are delimited by "#"
-		4): the overloaded handle_input function receives the message from producer and pass it directly to the 
-			function processMessage
+		3): The function sendScriptfile is used to send script files to the producer and is 
+			called in main once the connection to producer is successful. The scripts 
+			are sent in the form of char* buffer and acript names are delimited by "#"
+		4): the overloaded handle_input function receives the message from producer and 
+			pass it directly to the function processMessage
 			
-		5): The function processMessage parses the message buffer received from the producer and  assigns the correspondent 
-			behaviour to the director. 
+		5): The function processMessage parses the message buffer received from the producer 
+			and  assigns the correspondent behaviour to the director. 
 			
 	(3) Design of class SignalHandler:
 
