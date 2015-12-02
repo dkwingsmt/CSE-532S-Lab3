@@ -89,11 +89,7 @@ public:
     bool live() {
         return !_play->actEnded();
     }
-    
-	std::string getScriptName()
-	{
-		return _scriptName;
-	}
+ 
 };
 
 

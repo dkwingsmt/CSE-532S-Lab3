@@ -11,10 +11,6 @@ using namespace std;
 #define ARGID_IPADDR  2
 #define ARGID_MINTHRD 3
 #define ARGID_SCRIPT  4
-#define STOP          "stop"
-#define QUIT          "quit"
-#define START         "start"
-
 
 
 const char *USAGE = " <port> <ip_address> <min_threads> <script_file>+";
@@ -52,10 +48,7 @@ int program(int argc, char **argv) {
 		print_usage(argv[0]);
 		return ARGUMENT_ERROR;
 	}
- 
- 
- 
-
+  
 	vector<string> scripts_filename;
 	for (int i = ARGID_SCRIPT; i < argc; i++) {
 		scripts_filename.push_back(argv[i]);
@@ -70,23 +63,18 @@ int program(int argc, char **argv) {
 	if (connector.connect(mh, address)==-1)
 	{
 		ACE_DEBUG((LM_DEBUG,ACE_TEXT("connect error!/n")));  
+		print_usage(argv[0]);
         return -1;  
 	} 
 	else
 	{
 		cout<<"connect success"<<endl;
 		mh->sendScriptFile();
-		//return 0;
 	}
 
-	//TODO: Receive message and react according to the message. 
 
 	ACE_Reactor::run_event_loop();
 	cout << "Director quitted" <<endl;
-
-
-
- 
     return 0;
 }
 

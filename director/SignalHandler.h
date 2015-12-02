@@ -17,8 +17,7 @@ public:
   {
     switch(signum)
     {
-		case SIGINT: std::cout<<"You pressed SIGINT(Ctrl+C)\n";
-		//
+		case SIGINT: std::cout<<"SIGINT(Ctrl+C) Pressed \n";
 		ACE_Reactor::instance()->end_event_loop();
 		return 0;
     }
