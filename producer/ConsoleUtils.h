@@ -2,7 +2,9 @@
 #include <thread>
 #include <string>
 #define PLAY_COMMAND "PLAY"
+#define PLAY_COMMAND_L "play"
 #define STOP_COMMAND "STOP"
+#define STOP_COMMAND_L "stop"
 using namespace std;
 
 enum ConsoleCommand {
@@ -23,6 +25,7 @@ class ConsoleUtils
 	void start();
 	void doMenu(bool &);
 	pair<ConsoleCommand, int> parseCommand(string command);
+	void processCommand(ConsoleCommand command, int director, int play,bool &shutdown);
 
 public:
 

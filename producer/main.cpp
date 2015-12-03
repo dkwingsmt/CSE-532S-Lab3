@@ -25,20 +25,14 @@ int main(int argc, char* argv[]) {
 		Comms::shutdown();
 		DirectorRegister::tearDown();
 		ConsoleUtils::tearDown();
-		ACE_Reactor::instance()->close_singleton();
 	});	
 
 	cout << "Waiting on " << port_number << endl;
 
-	//CODE HERE
-	int index = 0;
-	TestHandler t1([&index](){
-
-		DirectorRegister::getInstance()->beginPlay(1,index++ % 2);
-
-	}, 7, 40);
+	ConsoleUtils::getInstance()->activate();
 
 	ACE_Reactor::instance()->run_reactor_event_loop();	
+	ACE_Reactor::instance()->close_singleton();
 
 	return 0;
 }

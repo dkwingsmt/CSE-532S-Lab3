@@ -21,13 +21,14 @@ string SimpleSerializer::serialize(const ClientMessage &message) {
 
 	return ss.str();
 }
-
+#include <iostream>
 ClientMessage SimpleSerializer::inflateClient(const string clientMessage){
 	regex clientMessageRegex("(\\d+)([#A-Za-z-_ 0-9.]+)?");
 	smatch match;
 	if(regex_search(clientMessage, match, clientMessageRegex) && match.size() > 0){
-		if(match.size() == 1){
-			return ClientMessage(static_cast<ClientMessageType>(stoi(match.str(1))));
+		ClientMessageType currentMessageType = static_cast<ClientMessageType>(stoi(match.str(1)));	
+		if(currentMessageType == AVAILABLE){
+			return ClientMessage(currentMessageType);
 		} else {
 			vector<string> playList;
 			string playListString = match.str(2);	
@@ -39,7 +40,7 @@ ClientMessage SimpleSerializer::inflateClient(const string clientMessage){
 				}
 			}
 			playList.push_back(playListString.substr(lastBegin));
-			return ClientMessage(REGISTER, move(playList));
+			return ClientMessage(currentMessageType, move(playList));
 		}
 	} else {
 		throw exception("Invalid message received from client !");

@@ -1,4 +1,5 @@
 #include "DirectorRegister.h"
+#include <iostream>
 once_flag DirectorRegister::initFlag;
 DirectorRegister* DirectorRegister::sharedInstance;
 
@@ -40,6 +41,7 @@ void DirectorRegister::stopDirector(int directorId) {
 void DirectorRegister::freeDirector(int directorId) {
 	lock_guard<mutex> guard(registerLock);
 	directorToPlayNumberBusy[directorId] = -1;
+	std::cout << "Director #" << directorId << " is now free" << std::endl;
 }
 
 int DirectorRegister::addDirector(ClientHandler* handler, vector<string> playList) {
@@ -60,14 +62,19 @@ bool DirectorRegister::removeDirector(int directorId) {
 	directorIdentifierToHandler.erase(directorId);
 	directorIdToPlays.erase(directorId);
 	directorToPlayNumberBusy.erase(directorId);
-	return --idCounter == 0;
+	bool lastDirector = --idCounter == 0;
+
+	if(lastDirector && exitInitiated) 
+		ACE_Reactor::instance()->end_reactor_event_loop();		
+
+	return lastDirector;
 	
 }
 
 void DirectorRegister::exit() {
 	lock_guard<mutex> guard(registerLock);				
+	exitInitiated = true;
 	for_each(directorIdentifierToHandler.begin(), directorIdentifierToHandler.end(), [](pair<int, ClientHandler*> p){
 		p.second->postMessage(ServerMessage(POISON));
 	});
-	exitInitiated = true;
 }
