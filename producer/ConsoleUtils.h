@@ -25,7 +25,10 @@ class ConsoleUtils
 	void start();
 	void doMenu(bool &);
 	pair<ConsoleCommand, int> parseCommand(string command);
+<<<<<<< HEAD
 	void processCommand(ConsoleCommand command, int director, int play,bool &shutdown);
+=======
+>>>>>>> zjx
 
 public:
 

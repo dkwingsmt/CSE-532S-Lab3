@@ -54,6 +54,12 @@ public:
             return false;
         }
     }
+
+	std::vector<std::string> getScriptsFileName()
+	{
+		return _scriptsFileName;
+	}
+	
 };
 
 #endif

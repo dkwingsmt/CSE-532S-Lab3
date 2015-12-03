@@ -1,5 +1,8 @@
 #include "DirectorRegister.h"
+<<<<<<< HEAD
 #include <iostream>
+=======
+>>>>>>> zjx
 once_flag DirectorRegister::initFlag;
 DirectorRegister* DirectorRegister::sharedInstance;
 
@@ -62,19 +65,30 @@ bool DirectorRegister::removeDirector(int directorId) {
 	directorIdentifierToHandler.erase(directorId);
 	directorIdToPlays.erase(directorId);
 	directorToPlayNumberBusy.erase(directorId);
+<<<<<<< HEAD
 	bool lastDirector = --idCounter == 0;
 
 	if(lastDirector && exitInitiated) 
 		ACE_Reactor::instance()->end_reactor_event_loop();		
 
 	return lastDirector;
+=======
+	return --idCounter == 0;
+>>>>>>> zjx
 	
 }
 
 void DirectorRegister::exit() {
 	lock_guard<mutex> guard(registerLock);				
+<<<<<<< HEAD
 	exitInitiated = true;
 	for_each(directorIdentifierToHandler.begin(), directorIdentifierToHandler.end(), [](pair<int, ClientHandler*> p){
 		p.second->postMessage(ServerMessage(POISON));
 	});
+=======
+	for_each(directorIdentifierToHandler.begin(), directorIdentifierToHandler.end(), [](pair<int, ClientHandler*> p){
+		p.second->postMessage(ServerMessage(POISON));
+	});
+	exitInitiated = true;
+>>>>>>> zjx
 }

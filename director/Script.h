@@ -11,7 +11,7 @@
 #include <condition_variable>
 #include <stdexcept>
 #include <atomic>
-
+#include <numeric>
 #include "common.h"
 #include "Player.h"
 #include "Play.h"
@@ -26,8 +26,8 @@ private:
     std::vector<tFragConfig> _scriptConfig;
     std::shared_ptr<Play> _play;
     std::list<std::shared_ptr<Player>> _players;
-
-    std::atomic<bool> _hasDirector;
+	std::string _scriptName;
+	std::atomic<bool> _hasDirector;
     PlayerRegistrar _registrar;
 
     std::thread _electionThread;
@@ -52,7 +52,7 @@ private:
 
 public:
     Script(std::string scriptFileName, size_t numberOfPlayers, std::function<void(void)> onActEnd) : 
-        _ended(false), _hasDirector(false), _onActEnd(onActEnd)
+		_ended(false), _hasDirector(false), _onActEnd(onActEnd), _scriptName(scriptFileName)
     {
         size_t biggestPairFrags = _readScript(scriptFileName);
         _recruit(std::max(biggestPairFrags, numberOfPlayers));
@@ -89,7 +89,7 @@ public:
     bool live() {
         return !_play->actEnded();
     }
-    
+ 
 };
 
 

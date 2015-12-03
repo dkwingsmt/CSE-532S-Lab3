@@ -21,7 +21,7 @@ string SimpleSerializer::serialize(const ClientMessage &message) {
 
 	return ss.str();
 }
-#include <iostream>
+
 ClientMessage SimpleSerializer::inflateClient(const string clientMessage){
 	regex clientMessageRegex("(\\d+)([#A-Za-z-_ 0-9.]+)?");
 	smatch match;
@@ -40,6 +40,7 @@ ClientMessage SimpleSerializer::inflateClient(const string clientMessage){
 				}
 			}
 			playList.push_back(playListString.substr(lastBegin));
+
 			return ClientMessage(currentMessageType, move(playList));
 		}
 	} else {
