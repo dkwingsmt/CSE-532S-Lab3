@@ -26,8 +26,17 @@ bool DirectorRegister::getPlayDetails(map<int, vector<string>> &directorIdToPlay
 	return true;
 }
 
+bool DirectorRegister::validDirector(int directorId) {
+	return directorIdentifierToHandler.find(directorId) != directorIdentifierToHandler.end();
+}
+
 void DirectorRegister::beginPlay(int directorId, int playNumber) {
 	if(exitInitiated) return;
+
+	if(!validDirector(directorId)) {
+		CL_OUT(cout << "Director #" << directorId << " is not connected anymore (refreshing...)" << endl);
+		return;
+	}
 
 	lock_guard<mutex> guard(registerLock);	
 	ClientHandler *target = directorIdentifierToHandler[directorId];
@@ -37,6 +46,12 @@ void DirectorRegister::beginPlay(int directorId, int playNumber) {
 
 bool DirectorRegister::stopDirector(int directorId, int playNum) {
 	lock_guard<mutex> guard(registerLock);	
+	
+	if(!validDirector(directorId)) {
+		CL_OUT(cout << "Director #" << directorId << " is not connected anymore (refreshing...)" << endl);
+		return true;
+	}
+	
 	if (directorToPlayNumberBusy[directorId] != playNum)
 	{
 		return false;

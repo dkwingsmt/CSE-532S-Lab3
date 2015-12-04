@@ -22,6 +22,8 @@ class DirectorRegister
 
 	DirectorRegister() : idCounter(0) { exitInitiated = false; }
 
+	bool validDirector(int directorId);
+
 public:
 
 	DirectorRegister(const DirectorRegister&);
