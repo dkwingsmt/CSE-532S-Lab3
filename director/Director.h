@@ -8,6 +8,7 @@ private:
     Script *_nowScript;
     std::vector<std::string> _scriptsFileName;
     size_t _numOfPlayers;
+	size_t currentPlayId;
     std::function<void(void)> _onActEnd;
 
     void _executeOnActEnd() {
@@ -24,11 +25,20 @@ public:
         stopNowScript();
     }
 
+	size_t getCurrentPlayId() {
+		return currentPlayId;
+	}
+
+	void resetPlayId() {
+		currentPlayId = -1;
+	}
+
     bool selectScript(size_t id) {
         if (id >= _scriptsFileName.size()) {
             return false;
         }
         stopNowScript();
+		currentPlayId = id;
         _nowScript = new Script(_scriptsFileName[id], _numOfPlayers, [this]{ _executeOnActEnd(); });
         _nowScript->start();
         return _nowScript != NULL;

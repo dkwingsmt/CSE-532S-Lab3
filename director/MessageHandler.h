@@ -29,6 +29,7 @@ enum ServerMessageType {
 class MessageHandler  :public ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_NULL_SYNCH>
 { 
 	typedef ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_NULL_SYNCH> super;
+	size_t currentPlayId;
 public: 
 	int open(void *p);
     int handle_input(ACE_HANDLE);
@@ -38,10 +39,6 @@ public:
 	void sendScriptFile();
 	MessageHandler (){};
 	MessageHandler(Director* director);
-	~MessageHandler()
-	{
-		cout << "Killed ClientHandler instance: " << this << endl << endl;
-	}
 
 	void sendFeedBack(ClientMessageType msgType);
 	void processMessage( char* msg_buffer);
