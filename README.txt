@@ -193,7 +193,8 @@ and the ACE_Reactor event loop thread.
 			and  assigns the correspondent behaviour to the director. 
 			
 	(3) Design of class SignalHandler:
-
+		We override the method  int handle_signal(int signum, siginfo_t*,ucontext_t*) , so that once 
+		the signal SIGINT is catched, it calls the reactor to end the event loop and the program will end. 
 2: Producer Program 
 	
 
