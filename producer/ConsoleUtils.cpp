@@ -3,6 +3,7 @@
 #include "DirectorRegister.h"
 #include "ConsoleLocker.h"
 #include <regex>
+#include <sstream>
 #define CONSOLE_INPUT_SIZE 256
 
 ConsoleUtils* ConsoleUtils::sharedInstance;
@@ -109,9 +110,16 @@ pair<ConsoleCommand, int> ConsoleUtils::parseCommand(string command) {
 	smatch match;
 	if(regex_match(command, match, commandRegex) && match.size() > 0) {
 		ConsoleCommand targetCommand = C_EXIT;
-		if(match.str(1).compare(PLAY_COMMAND) == 0 || match.str(1).compare(PLAY_COMMAND_L) == 0)
+		string command = match.str(1);
+		stringstream ss;
+		for(char & c : command)
+		{
+			ss<<(char)tolower(c);
+		}
+
+		if(ss.str().compare(PLAY_COMMAND) == 0)
 			targetCommand = ConsoleCommand::C_PLAY;	
-		else if (match.str(1).compare(STOP_COMMAND) == 0 || match.str(1).compare(STOP_COMMAND_L) == 0)
+		else if (ss.str().compare(STOP_COMMAND) == 0 )
 			targetCommand = ConsoleCommand::C_STOP;
 
 		return pair<ConsoleCommand, int>(targetCommand, targetCommand != C_EXIT && !match.str(2).empty()? stoi(match.str(2)) : -1);

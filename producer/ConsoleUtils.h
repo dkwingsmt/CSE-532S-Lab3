@@ -1,10 +1,9 @@
 #pragma once
 #include <thread>
 #include <string>
-#define PLAY_COMMAND "START"
-#define PLAY_COMMAND_L "start"
-#define STOP_COMMAND "STOP"
-#define STOP_COMMAND_L "stop"
+#define PLAY_COMMAND "start"
+#define STOP_COMMAND "stop"
+
 using namespace std;
 
 enum ConsoleCommand {
