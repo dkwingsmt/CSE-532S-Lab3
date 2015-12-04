@@ -96,7 +96,8 @@ void ConsoleUtils::processCommand(ConsoleCommand command, int  director, int pla
 			CL_OUT(cout << "Stop requires an option" << endl);
 			return;
 		}
-		DirectorRegister::getInstance()->stopDirector(director);
+		if  (! DirectorRegister::getInstance()->stopDirector(director, play))
+			CL_OUT(cout << "Director is not playing this script." <<endl );
 		break;
 	case C_EXIT:
 		shutdown = true;

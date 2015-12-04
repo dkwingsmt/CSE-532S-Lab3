@@ -9,22 +9,27 @@
 #include "TestHandler.h"
 #include "ConsoleLocker.h"
 #include "ExitSignalHandler.h"
+#include "ErrorCodes.h"
 using namespace std;
 
 #define ARGNUM         2
 #define ARGID_CMD      0
 #define ARGID_PORT     1
 
-int checkArguments(int, char* []);
+int checkArguments(int, char* [], int&);
 
 int main(int argc, char* argv[]) {
 
-	int port_number = checkArguments(argc, argv);
+	int commandLineErrors = 0;
+	int port_number = checkArguments(argc, argv, commandLineErrors);
+	if(port_number < 0)	return commandLineErrors;
+
 
 	if(!Comms::init(ACE_INET_Addr(port_number, "0.0.0.0"))){
 		cout << "Could not open on port " << port_number;
-		return PORT_NOT_AVAILABLE;
+		return E_PORT_NOT_AVAILABLE;
 	} 
+
 
 	TGuard applicationShutdownGuard([](){
 		Comms::shutdown();
@@ -48,18 +53,20 @@ int main(int argc, char* argv[]) {
 	return 0;
 }
 
-int checkArguments(int argc, char *argv[]) {
-
+int checkArguments(int argc, char *argv[], int &errCode) {
+	
 	if(argc != ARGNUM) {
 		cerr << "Usage: " << argv[ARGID_CMD] << "[port]" << endl;
-		terminate();
+		errCode = E_ILLEGAL_COMMAND_LINE;
+		return -1;
 	}
 
 	try {
 		return stoi(string(argv[ARGID_PORT]));
 	} catch(...) {
 		cerr << "Port number has to be a number" << endl;
-		terminate();
+		errCode = E_PORT_NOT_NUMBER;
+		return -1;
 	}
 
 }

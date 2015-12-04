@@ -35,11 +35,16 @@ void DirectorRegister::beginPlay(int directorId, int playNumber) {
 	directorToPlayNumberBusy[directorId] = playNumber;
 }
 
-void DirectorRegister::stopDirector(int directorId) {
+bool DirectorRegister::stopDirector(int directorId, int playNum) {
 	lock_guard<mutex> guard(registerLock);	
+	if (directorToPlayNumberBusy[directorId] != playNum)
+	{
+		return false;
+	}
 	ClientHandler *target = directorIdentifierToHandler[directorId];
 	target->postMessage(ServerMessage(STOP));
 	directorToPlayNumberBusy[directorId] = -1;
+	return true;
 }
 
 void DirectorRegister::freeDirector(int directorId) {
