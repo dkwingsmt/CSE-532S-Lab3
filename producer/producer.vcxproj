@@ -43,14 +43,14 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>\\warehouse2.seasad.wustl.edu\home\zeneil\cse532s\Project\CSE-532S-Lab3\common;H:\cse532s\Ace\ACE_wrappers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>H:\532\ACE_wrappers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>common.h</PrecompiledHeaderFile>
       <PreprocessorDefinitions>WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>H:\cse532s\Ace\ACE_wrappers\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>H:\532\ACE_wrappers\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>ACEd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -78,7 +78,6 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MessageQueue.cpp" />
     <ClCompile Include="SimpleSerializer.cpp" />
-    <ClCompile Include="TestHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\common.h" />
@@ -89,6 +88,7 @@
     <ClInclude Include="ConsoleLocker.h" />
     <ClInclude Include="ConsoleUtils.h" />
     <ClInclude Include="DirectorRegister.h" />
+    <ClInclude Include="ErrorCodes.h" />
     <ClInclude Include="ExitSignalHandler.h" />
     <ClInclude Include="ISerializer.h" />
     <ClInclude Include="MessageQueue.h" />
@@ -96,7 +96,6 @@
     <ClInclude Include="ServerMessage.h" />
     <ClInclude Include="SimpleSerializer.h" />
     <ClInclude Include="stdi.h" />
-    <ClInclude Include="TestHandler.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
