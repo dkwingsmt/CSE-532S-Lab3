@@ -71,8 +71,10 @@
     <ClCompile Include="..\common\common.cpp" />
     <ClCompile Include="ClientHandler.cpp" />
     <ClCompile Include="Comms.cpp" />
+    <ClCompile Include="ConsoleLocker.cpp" />
     <ClCompile Include="ConsoleUtils.cpp" />
     <ClCompile Include="DirectorRegister.cpp" />
+    <ClCompile Include="ExitSignalHandler.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MessageQueue.cpp" />
     <ClCompile Include="SimpleSerializer.cpp" />
@@ -84,8 +86,10 @@
     <ClInclude Include="ClientHandler.h" />
     <ClInclude Include="ClientMessage.h" />
     <ClInclude Include="Comms.h" />
+    <ClInclude Include="ConsoleLocker.h" />
     <ClInclude Include="ConsoleUtils.h" />
     <ClInclude Include="DirectorRegister.h" />
+    <ClInclude Include="ExitSignalHandler.h" />
     <ClInclude Include="ISerializer.h" />
     <ClInclude Include="MessageQueue.h" />
     <ClInclude Include="Serializers.h" />

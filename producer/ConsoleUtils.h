@@ -17,18 +17,17 @@ enum ConsoleCommand {
 class ConsoleUtils
 {
 	thread internalThread;
+	bool shutdown;
 	
 	static ConsoleUtils *sharedInstance;
 
-	ConsoleUtils(void){}
+	ConsoleUtils(void) : shutdown(false){}
 
 	void start();
-	void doMenu(bool &);
+	void doMenu();
 	pair<ConsoleCommand, int> parseCommand(string command);
-<<<<<<< HEAD
-	void processCommand(ConsoleCommand command, int director, int play,bool &shutdown);
-=======
->>>>>>> zjx
+	void processCommand(ConsoleCommand command, int director, int play);
+	void signalInterrupt(int sig);
 
 public:
 

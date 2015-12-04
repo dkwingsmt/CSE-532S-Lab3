@@ -7,7 +7,8 @@
 #include "ConsoleUtils.h"
 #include "stdi.h"
 #include "TestHandler.h"
-
+#include "ConsoleLocker.h"
+#include "ExitSignalHandler.h"
 using namespace std;
 
 int checkArguments(int, char* []);
@@ -25,11 +26,17 @@ int main(int argc, char* argv[]) {
 		Comms::shutdown();
 		DirectorRegister::tearDown();
 		ConsoleUtils::tearDown();
+
+		//Console Locker must be destroyed last
+		ConsoleLocker::tearDown();
 	});	
 
 	cout << "Waiting on " << port_number << endl;
 
 	ConsoleUtils::getInstance()->activate();
+
+	ExitSignalHandler sigHand;
+	ACE_Reactor::instance()->register_handler(SIGINT, &sigHand);
 
 	ACE_Reactor::instance()->run_reactor_event_loop();	
 	ACE_Reactor::instance()->close_singleton();

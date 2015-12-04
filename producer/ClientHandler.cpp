@@ -2,16 +2,16 @@
 #include <iostream>
 #include "stdi.h"
 #include "DirectorRegister.h"
+#include "ConsoleLocker.h"
 #include "Comms.h"
 using namespace std;
 
 int ClientHandler::open(void *acceptor_or_connector) {
 	if(reactor() && reactor()->register_handler(this, ACE_Event_Handler::READ_MASK | ACE_Event_Handler::WRITE_MASK) == -1) {
-		cout << "Error in connection" << endl;
+		CL_OUT(cout << endl << "[NOTIFICATION] New Director Connection Failed" << endl << endl);
 		return -1;
 	}
 
-	cout << "Connection established" << endl;
 	return 0;
 }
 
@@ -65,8 +65,6 @@ int ClientHandler::processClientMessage(const ClientMessage& message) {
 int ClientHandler::processMessage(const ServerMessage& message) {
 
 	string serializedMessage = move(serializer.currentSerializer()->serialize(message));
-	cout << serializedMessage << endl;
-	cout << serializedMessage.c_str() << endl;
 	peer().send(serializedMessage.c_str(), serializedMessage.length());
 
 	if(message.type == POISON) {

@@ -1,7 +1,10 @@
 #include "ConsoleUtils.h"
 #include <iostream>
 #include "DirectorRegister.h"
+#include "ConsoleLocker.h"
 #include <regex>
+#define CONSOLE_INPUT_SIZE 256
+
 ConsoleUtils* ConsoleUtils::sharedInstance;
 
 void ConsoleUtils::activate() {
@@ -9,16 +12,14 @@ void ConsoleUtils::activate() {
 }
 
 void ConsoleUtils::start() {
-		
-	bool shutdown = false;
-
 	do {
-		doMenu(shutdown);
+		doMenu();
+		CL_OUT(cout << endl << endl);
 	} while(!shutdown);
-
+	CL_OUT(cout << "Exiting, please wait..." << endl);
 }
 
-void ConsoleUtils::doMenu(bool &shutdown) {
+void ConsoleUtils::doMenu() {
 	map<int, vector<string>> directorIdToPlayListMap;
 	map<int, int> directorIdToPlayNumberBusy;
 	DirectorRegister::getInstance()->getPlayDetails(directorIdToPlayListMap, directorIdToPlayNumberBusy);
@@ -33,21 +34,34 @@ void ConsoleUtils::doMenu(bool &shutdown) {
 
 		for_each(p.second.begin(), p.second.end(), [&currentDirector, &currentPlayNumber, &consoleItemIndex, &consoleNumberToDirectorIdAndPlayNumber, &directorIdToPlayNumberBusy](string playName){
 			consoleNumberToDirectorIdAndPlayNumber[++consoleItemIndex] = pair<int, int>(currentDirector, currentPlayNumber);
-			cout << consoleItemIndex << ". Director #" << currentDirector << "'s " << playName << (directorIdToPlayNumberBusy[currentDirector] == currentPlayNumber ? "(busy)" : "") << endl;
+			CL_OUT(cout << consoleItemIndex << ". Director #" << currentDirector << "'s " << playName << (directorIdToPlayNumberBusy[currentDirector] == currentPlayNumber ? "(busy)" : "") << endl);
 			currentPlayNumber++;
 		});
 
 	});
 
-	cout << "Please type a command (play, stop, exit) followed by an option (if required)" << endl;
+	CL_OUT(cout << "Please type a command (play, stop, exit) followed by an option (if required)" << endl);
 
-	string currentCommand;
-	cin >> currentCommand;
+	char inputBuffer[CONSOLE_INPUT_SIZE];
+	cin.getline(inputBuffer, CONSOLE_INPUT_SIZE);
+
+	string currentCommand(inputBuffer);
+
+	//Might trigger if SIGINT is initiated
+	if(cin.fail()) { 
+		shutdown = true;
+		return; 
+	}
+
+	if(currentCommand.empty()) {
+		CL_OUT(cout << "Refreshing..." << endl);
+		return;
+	}
 
 	auto commandOptionPair = parseCommand(currentCommand);
 
 	if(commandOptionPair.first == C_INVALID) {
-		cout << "Command not recognized, please try again" << endl;
+		CL_OUT(cout << "Command not recognized, please try again" << endl);
 		return;
 	}
 
@@ -55,30 +69,30 @@ void ConsoleUtils::doMenu(bool &shutdown) {
 	if(commandOptionPair.second > 0) {
 		auto directorPlayNumberIt = consoleNumberToDirectorIdAndPlayNumber.find(commandOptionPair.second);
 		if(directorPlayNumberIt == consoleNumberToDirectorIdAndPlayNumber.end()) {
-			cout << "Invalid option " << commandOptionPair.second << ", please try again" << endl;
+			CL_OUT(cout << "Invalid option " << commandOptionPair.second << ", please try again" << endl);
 			return;
 		}
 		director = directorPlayNumberIt->second.first;
 		playNumber = directorPlayNumberIt->second.second;
 	}
 
-	processCommand(commandOptionPair.first, director, playNumber, shutdown);
+	processCommand(commandOptionPair.first, director, playNumber);
 
 }
 
-void ConsoleUtils::processCommand(ConsoleCommand command, int  director, int play, bool &shutdown) {
+void ConsoleUtils::processCommand(ConsoleCommand command, int  director, int play) {
 	switch (command)
 	{
 	case C_PLAY:
 		if(director<0 || play<0) {
-			cout << "Play requires an option" << endl;
+			CL_OUT(cout << "Play requires an option" << endl);
 			return;
 		}
 		DirectorRegister::getInstance()->beginPlay(director, play);
 		break;
 	case C_STOP:
 		if(director<0 || play<0) {
-			cout << "Stop requires an option" << endl;
+			CL_OUT(cout << "Stop requires an option" << endl);
 			return;
 		}
 		DirectorRegister::getInstance()->stopDirector(director);
@@ -91,16 +105,16 @@ void ConsoleUtils::processCommand(ConsoleCommand command, int  director, int pla
 }
 
 pair<ConsoleCommand, int> ConsoleUtils::parseCommand(string command) {
-	regex commandRegex("\\s*(PLAY|STOP|EXIT)\\s*(\\d+)?", regex_constants::ECMAScript | regex_constants::icase);
+	regex commandRegex("\\s*(PLAY|STOP|EXIT)(\\s+(\\d+))?", regex_constants::ECMAScript | regex_constants::icase);
 	smatch match;
 	if(regex_match(command, match, commandRegex) && match.size() > 0) {
 		ConsoleCommand targetCommand = C_EXIT;
 		if(match.str(1).compare(PLAY_COMMAND) == 0 || match.str(1).compare(PLAY_COMMAND_L) == 0)
 			targetCommand = ConsoleCommand::C_PLAY;	
-		else if (match.str(1).compare(STOP_COMMAND) == 0 || match.str(1).compare(STOP_COMMAND_L) == 0);
+		else if (match.str(1).compare(STOP_COMMAND) == 0 || match.str(1).compare(STOP_COMMAND_L) == 0)
 			targetCommand = ConsoleCommand::C_STOP;
 
-		return pair<ConsoleCommand, int>(targetCommand, targetCommand != C_EXIT ? stoi(match.str(2)) : -1);
+		return pair<ConsoleCommand, int>(targetCommand, targetCommand != C_EXIT && !match.str(2).empty()? stoi(match.str(2)) : -1);
 
 	} else {
 		return pair<ConsoleCommand, int>(C_INVALID, -1);
@@ -116,5 +130,9 @@ ConsoleUtils* ConsoleUtils::getInstance() {
 }
 
 void ConsoleUtils::tearDown() {
-	if(sharedInstance != nullptr) delete sharedInstance;
+	if(sharedInstance->internalThread.joinable()) 
+		sharedInstance->internalThread.join();
+
+	if(sharedInstance != nullptr) 
+		delete sharedInstance;
 }

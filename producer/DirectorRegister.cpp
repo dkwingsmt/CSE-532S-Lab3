@@ -1,8 +1,6 @@
 #include "DirectorRegister.h"
-<<<<<<< HEAD
+#include "ConsoleLocker.h"
 #include <iostream>
-=======
->>>>>>> zjx
 once_flag DirectorRegister::initFlag;
 DirectorRegister* DirectorRegister::sharedInstance;
 
@@ -19,10 +17,13 @@ void DirectorRegister::tearDown() {
 	if(sharedInstance != nullptr) delete sharedInstance;
 }
 
-void DirectorRegister::getPlayDetails(map<int, vector<string>> &directorIdToPlays, map<int, int> &directorToPlayNumberBusy) {
+bool DirectorRegister::getPlayDetails(map<int, vector<string>> &directorIdToPlays, map<int, int> &directorToPlayNumberBusy) {
 	lock_guard<mutex> guard(registerLock);
+	if(exitInitiated) return false;
 	directorIdToPlays = this->directorIdToPlays;
 	directorToPlayNumberBusy = this->directorToPlayNumberBusy;
+
+	return true;
 }
 
 void DirectorRegister::beginPlay(int directorId, int playNumber) {
@@ -44,7 +45,7 @@ void DirectorRegister::stopDirector(int directorId) {
 void DirectorRegister::freeDirector(int directorId) {
 	lock_guard<mutex> guard(registerLock);
 	directorToPlayNumberBusy[directorId] = -1;
-	std::cout << "Director #" << directorId << " is now free" << std::endl;
+	CL_OUT(std::cout << std::endl << "[NOTIFICATION] Director #" << directorId << " is now free (press enter to refresh)" << std::endl << std::endl);
 }
 
 int DirectorRegister::addDirector(ClientHandler* handler, vector<string> playList) {
@@ -57,6 +58,8 @@ int DirectorRegister::addDirector(ClientHandler* handler, vector<string> playLis
 	directorToPlayNumberBusy[currentId] = -1;
 	directorIdToPlays[currentId] = playList;
 
+	CL_OUT(cout << endl << "[NOTIFICATION] New Director (#" << currentId << ") Available (press enter to refresh)" << endl << endl);
+
 	return currentId;
 }
 
@@ -65,30 +68,29 @@ bool DirectorRegister::removeDirector(int directorId) {
 	directorIdentifierToHandler.erase(directorId);
 	directorIdToPlays.erase(directorId);
 	directorToPlayNumberBusy.erase(directorId);
-<<<<<<< HEAD
 	bool lastDirector = --idCounter == 0;
+
+	CL_OUT(cout << endl << "[NOTIFICATION] Director #" << directorId << " has disconnected (press enter to refresh)" << endl << endl);
 
 	if(lastDirector && exitInitiated) 
 		ACE_Reactor::instance()->end_reactor_event_loop();		
 
 	return lastDirector;
-=======
-	return --idCounter == 0;
->>>>>>> zjx
 	
 }
 
 void DirectorRegister::exit() {
 	lock_guard<mutex> guard(registerLock);				
-<<<<<<< HEAD
+
+	if(exitInitiated) return;
 	exitInitiated = true;
+
+	if(idCounter == 0) {
+		ACE_Reactor::instance()->end_reactor_event_loop();
+		return;
+	}
+
 	for_each(directorIdentifierToHandler.begin(), directorIdentifierToHandler.end(), [](pair<int, ClientHandler*> p){
 		p.second->postMessage(ServerMessage(POISON));
 	});
-=======
-	for_each(directorIdentifierToHandler.begin(), directorIdentifierToHandler.end(), [](pair<int, ClientHandler*> p){
-		p.second->postMessage(ServerMessage(POISON));
-	});
-	exitInitiated = true;
->>>>>>> zjx
 }

@@ -61,15 +61,12 @@ void MessageHandler::processMessage( char* msg_buffer)
 {
  
 	string  msg_str = string(msg_buffer);
-	istringstream iss(msg_str);
-	std::istream_iterator<std::string> beg(iss), end;
-	vector<string> messageVec(beg, end);
 	int msgType = stoi(msg_str.substr(0, msg_str.find_first_of("#")));
 
 	if (msgType == START)
 	{
 		//TODO: Start to play the correspondent play, which is indicated in 
-		string scriptNum = msg_str.substr( msg_str.find_first_of("#")+1, 1);
+		string scriptNum = msg_str.substr( msg_str.find_first_of("#")+1);
 		myDirector->selectScript(stoi(scriptNum));
 
 	}

@@ -30,7 +30,7 @@ public:
 	int addDirector(ClientHandler*, vector<string>);
 	bool removeDirector(int directorId);
 
-	void getPlayDetails(map<int, vector<string>> &directorIdToPlays, map<int, int> &directorToPlayNumberBusy);
+	bool getPlayDetails(map<int, vector<string>> &directorIdToPlays, map<int, int> &directorToPlayNumberBusy);
 	void beginPlay(int directorId, int playNumber);
 	void stopDirector(int directorId);
 	void freeDirector(int directorId);
