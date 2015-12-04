@@ -68,19 +68,19 @@ private:
     std::atomic<Player*> _idler;
     bool _ended;
 public:
-    PlayerRegistrar() : _idler(NULL), _ended(false) {}
+    PlayerRegistrar() : _idler(nullptr), _ended(false) {}
 
     void declareIdle(Player *me) {
-        Player *empty = NULL;
+        Player *empty = nullptr;
         while (!_ended && !std::atomic_compare_exchange_strong(&_idler, &empty, me)) {
-            empty = NULL;
+            empty = nullptr;
             std::this_thread::yield();
         }
     }
 
     Player *getIdle() {
-        Player *leader = NULL;
-        while (!_ended && !(leader = (Player*)std::atomic_exchange(&_idler, NULL))) {
+        Player *leader = nullptr;
+        while (!_ended && !(leader = (Player*)std::atomic_exchange(&_idler, nullptr))) {
             std::this_thread::yield();
         }
         return leader;

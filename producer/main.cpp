@@ -11,6 +11,10 @@
 #include "ExitSignalHandler.h"
 using namespace std;
 
+#define ARGNUM         2
+#define ARGID_CMD      0
+#define ARGID_PORT     1
+
 int checkArguments(int, char* []);
 
 int main(int argc, char* argv[]) {
@@ -19,7 +23,7 @@ int main(int argc, char* argv[]) {
 
 	if(!Comms::init(ACE_INET_Addr(port_number, "0.0.0.0"))){
 		cout << "Could not open on port " << port_number;
-		return 99;
+		return PORT_NOT_AVAILABLE;
 	} 
 
 	TGuard applicationShutdownGuard([](){
@@ -46,13 +50,13 @@ int main(int argc, char* argv[]) {
 
 int checkArguments(int argc, char *argv[]) {
 
-	if(argc != 2) {
-		cerr << "usage: " << argv[0] << "[port]" << endl;
+	if(argc != ARGNUM) {
+		cerr << "Usage: " << argv[ARGID_CMD] << "[port]" << endl;
 		terminate();
 	}
 
 	try {
-		return stoi(string(argv[1]));
+		return stoi(string(argv[ARGID_PORT]));
 	} catch(...) {
 		cerr << "Port number has to be a number" << endl;
 		terminate();
