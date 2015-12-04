@@ -71,7 +71,7 @@ int program(int argc, char **argv) {
 	{
 		ACE_DEBUG((LM_DEBUG,ACE_TEXT("connect error!/n")));  
 		print_usage(argv[0]);
-        return -1;  
+        return CANNOT_CONNECT;  
 	} 
 	else
 	{

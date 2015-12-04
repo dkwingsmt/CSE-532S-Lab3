@@ -16,7 +16,9 @@ enum ErrorCode {
 	EXCEPTION = 1,
 	FILE_NOT_OPEN,
 	ARGUMENT_ERROR,
-	NO_PLAY_AVAILABLE
+	NO_PLAY_AVAILABLE,
+	PORT_NOT_AVAILABLE,
+	CANNOT_CONNECT
 };
 
 //The guard object, that performs given procedure upon desctuction. 

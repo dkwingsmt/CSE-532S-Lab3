@@ -16,7 +16,7 @@ private:
     }
 public:
     Director(std::vector<std::string> scriptsFileName, size_t numberOfPlayers = 0) : 
-        _nowScript(NULL), _scriptsFileName(scriptsFileName), _numOfPlayers(numberOfPlayers),
+        _nowScript(nullptr), _scriptsFileName(scriptsFileName), _numOfPlayers(numberOfPlayers),
         _onActEnd([]{})
     {
     }
@@ -41,14 +41,14 @@ public:
 		currentPlayId = id;
         _nowScript = new Script(_scriptsFileName[id], _numOfPlayers, [this]{ _executeOnActEnd(); });
         _nowScript->start();
-        return _nowScript != NULL;
+        return _nowScript != nullptr;
     }
 
     void stopNowScript() {
         if (_nowScript) {
             delete _nowScript;
         }
-        _nowScript = NULL;
+        _nowScript = nullptr;
     }
 
     void onActEnd(std::function<void(void)> f) {

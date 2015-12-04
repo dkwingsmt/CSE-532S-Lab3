@@ -35,7 +35,7 @@ The solution folder consists of the following folders,
 === Build ===
 
 Open lab3.sln in the solution folder with VS 2012, and build the solution.
-This solution consists of 2 VS projects, lab2 and lab2_generator,
+This solution consists of 2 VS projects, director and producer,
 and should generate two executable files in Debug or Release folder in the 
 solution folder, depends on which profile is choosed.
 
