@@ -6,7 +6,6 @@
 #include "DirectorRegister.h"
 #include "ConsoleUtils.h"
 #include "stdi.h"
-#include "TestHandler.h"
 #include "ConsoleLocker.h"
 #include "ExitSignalHandler.h"
 #include "ErrorCodes.h"
