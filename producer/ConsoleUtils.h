@@ -1,8 +1,8 @@
 #pragma once
 #include <thread>
 #include <string>
-#define PLAY_COMMAND "PLAY"
-#define PLAY_COMMAND_L "play"
+#define PLAY_COMMAND "START"
+#define PLAY_COMMAND_L "start"
 #define STOP_COMMAND "STOP"
 #define STOP_COMMAND_L "stop"
 using namespace std;

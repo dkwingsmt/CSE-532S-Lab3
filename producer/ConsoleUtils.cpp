@@ -40,7 +40,7 @@ void ConsoleUtils::doMenu() {
 
 	});
 
-	CL_OUT(cout << "Please type a command (play, stop, exit) followed by an option (if required)" << endl);
+	CL_OUT(cout << "Please type a command (start, stop, exit) followed by an option (if required)" << endl);
 
 	char inputBuffer[CONSOLE_INPUT_SIZE];
 	cin.getline(inputBuffer, CONSOLE_INPUT_SIZE);
@@ -105,7 +105,7 @@ void ConsoleUtils::processCommand(ConsoleCommand command, int  director, int pla
 }
 
 pair<ConsoleCommand, int> ConsoleUtils::parseCommand(string command) {
-	regex commandRegex("\\s*(PLAY|STOP|EXIT)(\\s+(\\d+))?", regex_constants::ECMAScript | regex_constants::icase);
+	regex commandRegex("\\s*(START|STOP|EXIT)(\\s+(\\d+))?", regex_constants::ECMAScript | regex_constants::icase);
 	smatch match;
 	if(regex_match(command, match, commandRegex) && match.size() > 0) {
 		ConsoleCommand targetCommand = C_EXIT;
