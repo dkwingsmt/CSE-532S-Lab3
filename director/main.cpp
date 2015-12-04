@@ -51,6 +51,13 @@ int program(int argc, char **argv) {
   
 	vector<string> scripts_filename;
 	for (int i = ARGID_SCRIPT; i < argc; i++) {
+		ifstream scriptFile(argv[i]);
+		if(!scriptFile) {
+			cout << endl;
+			print_usage(argv[0]);
+			throw invalid_argument(argv[i]);
+		}
+
 		scripts_filename.push_back(argv[i]);
 		cout << "[New script] " << scripts_filename.back() << endl;
 	}

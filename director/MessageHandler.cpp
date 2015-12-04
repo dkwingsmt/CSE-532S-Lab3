@@ -15,13 +15,14 @@ int MessageHandler::handle_input(ACE_HANDLE)
 {  
 	char msg_buffer[MAX_BUFFER_SIZE];  
 	if (  peer().recv(msg_buffer,MAX_BUFFER_SIZE )>0 )
-	{
 		processMessage(msg_buffer);
-	}
 	else
 	{
-		cout<<"no data received"<<endl;
-	};  
+		myDirector->stopNowScript();
+		ACE_Reactor::instance()->remove_handler(this, ACE_Event_Handler::READ_MASK); 
+		ACE_Reactor::instance()->end_event_loop();
+	}
+
     return 0;  
 }  
  
@@ -53,7 +54,13 @@ MessageHandler::MessageHandler(Director* director)
 void MessageHandler::sendFeedBack(ClientMessageType msgType)
 {
 	string str = to_string(msgType);
-	peer().send(str.c_str(),str.length() );
+	if(currentPlayId == myDirector->getCurrentPlayId()) {
+		peer().send(str.c_str(),str.length() );
+		currentPlayId = -1;
+	}
+
+	myDirector->resetPlayId();
+
 	return;
 }
  
@@ -67,7 +74,8 @@ void MessageHandler::processMessage( char* msg_buffer)
 	{
 		//TODO: Start to play the correspondent play, which is indicated in 
 		string scriptNum = msg_str.substr( msg_str.find_first_of("#")+1);
-		myDirector->selectScript(stoi(scriptNum));
+		currentPlayId = stoi(scriptNum);
+		myDirector->selectScript(currentPlayId);
 
 	}
 	else if (msgType == STOP)
