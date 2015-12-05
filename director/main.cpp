@@ -81,6 +81,7 @@ int program(int argc, char **argv) {
 
 
 	ACE_Reactor::run_event_loop();
+	mh->removeHandlers();
 	cout << "Director quitted" <<endl;
     return 0;
 }

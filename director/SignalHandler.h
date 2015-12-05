@@ -19,10 +19,12 @@ public:
     {
 		case SIGINT: std::cout<<"SIGINT(Ctrl+C) Pressed \n";
 		ACE_Reactor::instance()->end_event_loop();
-		return 0;
+		return -1;
     }
     return 0;
   }
+
+ 
 
 };  
 #endif

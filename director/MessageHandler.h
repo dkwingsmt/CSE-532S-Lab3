@@ -42,9 +42,10 @@ public:
 
 	void sendFeedBack(ClientMessageType msgType);
 	void processMessage( char* msg_buffer);
-
+	void removeHandlers();
 private:
 	Director* myDirector;
+	SignalHandler* sh;
 	static const int MAX_BUFFER_SIZE = 1024;
 };
 

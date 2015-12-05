@@ -7,7 +7,8 @@ int MessageHandler::open(void *p)
 {
 	ACE_DEBUG((LM_DEBUG,ACE_TEXT("connection established/n")));  
     ACE_Reactor::instance()->register_handler(this,ACE_Event_Handler::READ_MASK);  
-	ACE_Reactor::instance()->register_handler(SIGINT, new SignalHandler);
+	sh = new SignalHandler;
+	ACE_Reactor::instance()->register_handler(SIGINT, sh);
 	return 0;  
 }
 
@@ -86,11 +87,16 @@ void MessageHandler::processMessage( char* msg_buffer)
 	else if (msgType== POISON)
 	{
 		//TODO: Quit the director program safely, and send feedback to producer.
-		//Remove the handler and then end event loop. 
+		//Remove the handlers and then end event loop. 
 		myDirector->stopNowScript();
-		ACE_Reactor::instance()->remove_handler(this, ACE_Event_Handler::READ_MASK); 
 		ACE_Reactor::instance()->end_event_loop();
 
 	}
 	return;
+}
+
+void MessageHandler::removeHandlers()
+{
+	ACE_Reactor::instance()->remove_handler(this, ACE_Event_Handler::READ_MASK); 
+	ACE_Reactor::instance()->remove_handler(sh, SIGINT);
 }
