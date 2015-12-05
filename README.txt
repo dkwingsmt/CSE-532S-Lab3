@@ -34,7 +34,7 @@ The solution folder consists of the following folders,
 
 === Build ===
 
-Open lab3.sln in the solution folder with VS 2012, and build the solution.
+Open lab3.sln in the solution folder with VS 2012.
 This solution consists of 2 VS projects, director and producer. 
 Before we build them, open up their project properties dialog window, and under
 Congfiguration Properties -> C/C++ -> General -> Additional Include Directories 
