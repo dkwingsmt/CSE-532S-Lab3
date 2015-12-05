@@ -35,9 +35,15 @@ The solution folder consists of the following folders,
 === Build ===
 
 Open lab3.sln in the solution folder with VS 2012, and build the solution.
-This solution consists of 2 VS projects, lab2 and lab2_generator,
-and should generate two executable files in Debug or Release folder in the 
-solution folder, depends on which profile is choosed.
+This solution consists of 2 VS projects, director and producer. 
+Before we build them, open up their project properties dialog window, and under
+Congfiguration Properties -> C/C++ -> General -> Additional Include Directories 
+please give the fully qualified path to the ACE_wrappers directory.
+Also, under Congfiguration Properties -> Linker -> General -> Additional Library Directories 
+please give the fully qualified path to the ACE_wrappers\lib directory, and 
+under Congfiguration Properties -> Linker -> Input -> Additional Dependencies 
+please add ACEd.lib (for the ACE debug DLL).
+Then we can build the two project separately. 
 
 == After Build ==
 
