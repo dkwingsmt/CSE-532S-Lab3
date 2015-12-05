@@ -1,0 +1,5 @@
+enum ApplicationErrorCodes {
+	E_PORT_NOT_AVAILABLE = 1,
+	E_PORT_NOT_NUMBER,
+	E_ILLEGAL_COMMAND_LINE
+};
