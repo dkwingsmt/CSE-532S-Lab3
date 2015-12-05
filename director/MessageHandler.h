@@ -45,7 +45,7 @@ public:
 
 private:
 	Director* myDirector;
-	static const int MAX_BUFFER_SIZE = 3;
+	static const int MAX_BUFFER_SIZE = 1024;
 };
 
  
